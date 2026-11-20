@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>if(window.top!==window.self)document.documentElement.classList.add('embed')</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>etvnet · Interactive prototype</title>
@@ -471,6 +472,7 @@ body.full #full{opacity:0;transition:opacity .2s}body.full #full:hover,body.full
 
 /* ===== showcase layout ===== */
 html,body{background:#000}
+html.embed,html.embed body{background:transparent}
 .bar,.spec{display:none!important}
 body{min-height:100vh}
 main.show{flex:1;display:flex;align-items:center;justify-content:center;gap:28px;padding:16px;box-sizing:border-box;min-height:100vh}
@@ -2286,7 +2288,7 @@ $('#full').addEventListener('click',()=>document.body.classList.contains('full')
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('full'))setFull(false);});
 if(0)document.addEventListener('keydown',e=>{if(['f','F','a','A'].includes(e.key)&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();e.stopPropagation();document.body.classList.contains('full')?exitFull():goFull();}},true);
 if(/[?&]full\b/.test(location.search)||location.hash==='#full')setFull(true);
-P=ArchPage(null);pagesEl.appendChild(P.root);syncMenu(false);P.layout(false);spec();vp.focus();
+P=ArchPage(null);pagesEl.appendChild(P.root);syncMenu(false);P.layout(false);spec();if(window.top===window.self)vp.focus();
 
 
 document.querySelectorAll('[data-wv]').forEach(b=>b.addEventListener('click',()=>{WATCHED_EMPTY=b.dataset.wv==='0';document.querySelectorAll('[data-wv]').forEach(x=>x.setAttribute('aria-pressed',x===b));
