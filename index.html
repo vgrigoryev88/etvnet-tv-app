@@ -605,7 +605,8 @@ $('#logo').innerHTML=LOGO_C+LOGO_F;
 const mItems=ITEMS.map((it,i)=>{const d=el('div','item',{top:it.y+'px'});d.innerHTML='<div class="ic"><svg viewBox="0 0 56 56" fill="none">'+ICON[it.id]+'</svg></div><div class="lb">'+it.label+'</div>';
   d.addEventListener('click',e=>{e.stopPropagation();stopDemo();if(st.zone!=='menu')toMenu();st.mf=i;syncMenu();activate();});menu.appendChild(d);return d;});
 function fitMenuLabels(){const AV=324-80-28;mItems.forEach(d=>{const lb=d.querySelector('.lb');lb.style.fontSize='';const w=lb.scrollWidth;if(w>AV)lb.style.fontSize=(28*AV/w).toFixed(2)+'px';});}
-fitMenuLabels();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitMenuLabels);window.addEventListener('load',fitMenuLabels);
+fitMenuLabels();if(document.fonts){document.fonts.ready.then(fitMenuLabels);document.fonts.addEventListener&&document.fonts.addEventListener('loadingdone',fitMenuLabels);document.fonts.load('500 28px Inter').then(fitMenuLabels).catch(()=>{});}window.addEventListener('load',fitMenuLabels);[300,1000,2500].forEach(t=>setTimeout(fitMenuLabels,t));
+if(window.ResizeObserver){let fz=0;const ro=new ResizeObserver(()=>{if(fz)return;fz=1;requestAnimationFrame(()=>{fitMenuLabels();fz=0;});});mItems.forEach(d=>ro.observe(d.querySelector('.lb')));}
 function syncMenu(animate=true){
   const inMenu=st.zone==='menu',open=st.mode==='exp'||inMenu,ph=inMenu?{d:M.menuO,e:M.enter}:{d:M.menuC,e:M.exit},d=animate?ph.d:0;
   panel.style.transition=T(['transform'],d,ph.e);panel.style.transform='scaleX('+(open?1:136/384)+')';
