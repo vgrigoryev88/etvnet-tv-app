@@ -600,6 +600,7 @@ function fadeOverflow(t){t.classList.toggle('fade',t.firstChild.scrollWidth>t.cl
 
 /* ================= side menu (expanded / collapsed) ================= */
 const ITEMS=[{id:'live',label:'Live TV',y:160},{id:'chan',label:'TV Archive',y:248},{id:'arch',label:'Archive',y:336},{id:'movies',label:'Films',y:424},{id:'series',label:'Series',y:512},{id:'fav',label:'Favourites',y:600},{id:'persons',label:'People',y:688},{id:'watched',label:'Watched',y:776},{id:'search',label:'Search',y:872},{id:'settings',label:'Settings',y:960}];
+function chipW(t){const w=measure(t,'600 32px Inter')+48;return t==='All'?Math.max(143,w):w;}
 const menu=$('#menu'),panel=$('#panel'),pSel=$('#pSel'),pFoc=$('#pFoc');
 $('#logo').innerHTML=LOGO_C+LOGO_F;
 const mItems=ITEMS.map((it,i)=>{const d=el('div','item',{top:it.y+'px'});d.innerHTML='<div class="ic"><svg viewBox="0 0 56 56" fill="none">'+ICON[it.id]+'</svg></div><div class="lb">'+it.label+'</div>';
@@ -710,7 +711,7 @@ function LiveListPage(){
   const inner=el('div','abs',{left:'0',top:'-144px'});clip.appendChild(inner);inner.appendChild(o.v);
   o.tabsEl=el('div','abs m',{left:'0',top:'0'});o.root.appendChild(o.tabsEl);
   o.tabsEl.appendChild(el('div','abs',{left:(X-16)+'px',top:'144px',width:(1920-X+16)+'px',height:'112px',background:'var(--bg)'}));
-  let tx=0;o.tabs=LL_CATS.map(([t])=>{const w=measure(t,'600 32px Inter')+48;const c=el('div','chip',{left:(X+tx)+'px',top:'164px',width:w+'px'},t);tx+=w+16;o.tabsEl.appendChild(c);return c;});
+  let tx=0;o.tabs=LL_CATS.map(([t])=>{const w=chipW(t);const c=el('div','chip',{left:(X+tx)+'px',top:'164px',width:w+'px'},t);tx+=w+16;o.tabsEl.appendChild(c);return c;});
   o.heads.forEach(h=>{const e=el('div','llh',{left:X+'px',top:h.y+'px',width:W+'px'});e.innerHTML='<b></b><span>'+plCh(h.n)+'</span>';e.querySelector('b').textContent=h.cat;o.v.appendChild(e);});
   o.rowEls=o.rows.map(r=>{const e=el('div','llrow',{left:X+'px',top:r.y+'px',width:W+'px'});
     e.innerHTML='<div class="llp">'+(r.img!=null?'<img src="c/chn'+r.img+'.jpg" width="160" height="160">':'<span></span>')+'</div><div class="llc"><div class="llt"><b></b>'+(r.fav?'<i class="llf">'+IC.favOn.replace(/width="40" height="40"/,'width="28" height="28"')+'</i>':'')+'</div><div class="lld"></div><div class="lltm">12:00 - 12:50</div><div class="llbar"><u style="width:'+r.p+'%"></u></div></div><div class="lla"><svg viewBox="0 0 24 24" width="28" height="28" fill="none"><path d="M9 5l7 7-7 7" stroke="#F7F5F5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
@@ -873,7 +874,7 @@ function LiveGridPage(big){
   o.tabsEl=el('div','abs m',{left:'0',top:'0'});o.root.appendChild(o.tabsEl);
   const tclip=el('div','abs',{left:(X-16)+'px',top:'144px',width:(GW+32)+'px',height:'112px',overflow:'hidden',background:'var(--bg)'});o.tabsEl.appendChild(tclip);
   o.trow=el('div','abs',{left:'16px',top:'20px'});tclip.appendChild(o.trow);
-  let tx=0;o.tabs=LL_CATS.map(([t])=>{const w=measure(t,'600 32px Inter')+48;const c=el('div','chip',{left:tx+'px',width:w+'px'},t);c.dataset.x=tx;c.dataset.w=w;tx+=w+16;o.trow.appendChild(c);return c;});
+  let tx=0;o.tabs=LL_CATS.map(([t])=>{const w=chipW(t);const c=el('div','chip',{left:tx+'px',width:w+'px'},t);c.dataset.x=tx;c.dataset.w=w;tx+=w+16;o.trow.appendChild(c);return c;});
   o.tabsMax=Math.max(0,tx-16-GW);
   o.stk=el('div','lstk',{left:(X-16)+'px',width:(GW+32)+'px'});o.stk.innerHTML='<div class="llh" style="left:16px;top:16px;width:'+GW+'px"><b></b><span></span></div>';o.root.appendChild(o.stk);
   liveSide(o);mainHeader(o,X,'Live TV');
@@ -1105,7 +1106,7 @@ function personCardL(p){const c=el('div','pcard L');const pc=el('div','pc');
 function PersonsPage(){
   const o={name:'persons',top:'persons',mode:'col',root:el('div','page'),area:'grid',tab:0,tf:0,lt:-1,lf:-1,gr:0,gc:0,pf:0,q:''};const VA=PSEARCH==='A';
   o.crumb=el('div','crumb',{left:'168px',top:'64px'});o.crumb.innerHTML='<b>People</b>';o.root.appendChild(o.crumb);o.root.appendChild(clockEl());
-  let x=0;o.tabs=ROLE_TABS.map(t=>{const w=measure(t,'600 32px Inter')+48;const c=el('div','chip',{left:(168+x)+'px',top:'160px',width:w+'px'},t);x+=w+16;o.root.appendChild(c);return c;});
+  let x=0;o.tabs=ROLE_TABS.map(t=>{const w=chipW(t);const c=el('div','chip',{left:(168+x)+'px',top:'160px',width:w+'px'},t);x+=w+16;o.root.appendChild(c);return c;});
   /* A: the typed prefix is shown at the right of the tabs row; C: “Найти персону” closes the tabs row */
   if(VA){o.qel=el('div','pq');o.qel.innerHTML='<span>Surname starts with </span><b></b><i></i>';o.root.appendChild(o.qel);}
   else{const w=measure('Find a person','600 32px Inter')+48+42;o.sbtn=el('div','chip psb',{left:(1872-w)+'px',top:'160px',width:w+'px'});o.sbtn.innerHTML=SRCH_IC+'<span>Find a person</span>';o.root.appendChild(o.sbtn);}
@@ -1205,7 +1206,7 @@ function SearchPage(opt={}){
   o.padL=()=>{o.bar.style.paddingLeft=(MS?(L1?(o.mChip.offsetWidth||260)+24:656):24)+'px';};if(MS&&L1){const ic=o.bar.querySelector('svg');if(ic)ic.style.display='none';}o.padL();o.root.appendChild(o.cnt);
   // ---- tabs over the results: content types or person roles, by mode
   const TT_C=[['All',null],['Films','film'],['Series','series'],['Shows','show']],TT_P=ROLE_TABS.map((t,i)=>[t,ROLE_OF[i]||null]);
-  o.drawTabs=function(){(o.tabs||[]).forEach(c=>c.remove());o.TT=o.isP()?[['All',null]]:TT_C;let tx=0;o.tabs=(o.isP()?[]:o.TT).map(([t])=>{const w=measure(t,'600 32px Inter')+48;const c=el('div','chip tall',{left:(824+tx)+'px',top:Y.tabs+'px',width:w+'px'},t);tx+=w+16;o.root.appendChild(c);return c;});};
+  o.drawTabs=function(){(o.tabs||[]).forEach(c=>c.remove());o.TT=o.isP()?[['All',null]]:TT_C;let tx=0;o.tabs=(o.isP()?[]:o.TT).map(([t])=>{const w=chipW(t);const c=el('div','chip tall',{left:(824+tx)+'px',top:Y.tabs+'px',width:w+'px'},t);tx+=w+16;o.root.appendChild(c);return c;});};
   o.drawTabs();
   o.gy=()=>o.isP()?Y.tabs:Y.grid;/* персоны: без табов, сетка с уровня табов */o.gclip=el('div','abs',{left:'808px',top:(o.gy()-16)+'px',width:'984px',height:(1096-o.gy())+'px',overflow:'hidden'});o.placeGrid=()=>{o.gclip.style.top=(o.gy()-16)+'px';o.gclip.style.height=(1096-o.gy())+'px';};o.root.appendChild(o.gclip);o.gw=el('div','abs m',{left:'16px',top:'16px'});o.gclip.appendChild(o.gw);
   /* grid geometry: content 2 × 2 posters 464×254; persons — the same Archive/Card/Person as on “Персоналии” (Size=Default 448×176), 2 × 3 */
@@ -1406,7 +1407,7 @@ function FavPage(){
   // filters: only types that exist; no row if one type only
   o.tabs=FAV_TABS.map((t,i)=>({i,t:t[0],k:t[1]})).filter(t=>!t.k||all.some(x=>x.kind===t.k));if(o.tabs.length<=2)o.tabs=[];
   if(!o.tabs.some(t=>t.i===FAV_FILTER))FAV_FILTER=0;o.ff=FAV_FILTER;
-  let tx=0;o.tEls=o.tabs.map(t=>{const w=measure(t.t,'600 32px Inter')+48;const c=el('div','chip',{left:(X+tx)+'px',top:'160px',width:w+'px'},t.t);tx+=w+16;o.root.appendChild(c);return c;});
+  let tx=0;o.tEls=o.tabs.map(t=>{const w=chipW(t.t);const c=el('div','chip',{left:(X+tx)+'px',top:'160px',width:w+'px'},t.t);tx+=w+16;o.root.appendChild(c);return c;});
   const gtop=o.tabs.length?GT:160;
   o.clip=el('div','abs',{left:(X-16)+'px',top:(gtop-16)+'px',width:(1840-X+16)+'px',height:(1080-gtop+16)+'px',overflow:'hidden'});o.root.appendChild(o.clip);
   o.gw=el('div','abs m',{left:'16px',top:'16px'});o.clip.appendChild(o.gw);
@@ -1749,7 +1750,7 @@ function ChannelsPage(top){
   o.root.appendChild(o.crumb);o.root.appendChild(clockEl());
   const tclip=el('div','abs',{left:'152px',top:'152px',width:'1768px',height:'80px',overflow:'hidden'});o.root.appendChild(tclip);
   o.trow=el('div','abs',{left:'16px',top:'8px'});tclip.appendChild(o.trow);
-  let x=0;o.tabs=CH_CATS.map(t=>{const w=measure(t,'600 32px Inter')+48;const c=el('div','chip',{left:x+'px',width:w+'px'},t);c.dataset.x=x;c.dataset.w=w;x+=w+16;o.trow.appendChild(c);return c;});
+  let x=0;o.tabs=CH_CATS.map(t=>{const w=chipW(t);const c=el('div','chip',{left:x+'px',width:w+'px'},t);c.dataset.x=x;c.dataset.w=w;x+=w+16;o.trow.appendChild(c);return c;});
   o.tabsMax=Math.max(0,x-16-1704);
   // left: compact channel list
   o.lcol=el('div','abs',{left:'0',top:'0',width:'800px',height:'1080px'});o.root.appendChild(o.lcol);
@@ -1862,7 +1863,7 @@ function CatPage(catIdx,top,ch,opt={}){
   // tabs (clip with 16 px focus clearance)
   const tclip=el('div','abs',{left:'152px',top:'152px',width:'1768px',height:'80px',overflow:'hidden'});add(tclip);
   o.trow=el('div','abs',{left:'16px',top:'8px'});tclip.appendChild(o.trow);
-  let x=0;o.tabs=TABS.map(t=>{const w=measure(t,'600 32px Inter')+48;const c=el('div','chip',{left:x+'px',width:w+'px'},t);c.dataset.x=x;c.dataset.w=w;x+=w+16;o.trow.appendChild(c);return c;});
+  let x=0;o.tabs=TABS.map(t=>{const w=chipW(t);const c=el('div','chip',{left:x+'px',width:w+'px'},t);c.dataset.x=x;c.dataset.w=w;x+=w+16;o.trow.appendChild(c);return c;});
   o.tabsMax=Math.max(0,x-16-1704);
   // filter buttons
   o.fbtns=FILTERS.map((f,i)=>{const b=el('div','fbtn',{top:'248px'});add(b);return b;});
