@@ -599,7 +599,7 @@ function startMarquee(t){
 function fadeOverflow(t){t.classList.toggle('fade',t.firstChild.scrollWidth>t.clientWidth);}
 
 /* ================= side menu (expanded / collapsed) ================= */
-const ITEMS=[{id:'live',label:'Live TV',y:160},{id:'chan',label:'Channel Archive',y:248},{id:'arch',label:'Archive',y:336},{id:'movies',label:'Films',y:424},{id:'series',label:'Series',y:512},{id:'fav',label:'Favourites',y:600},{id:'persons',label:'People',y:688},{id:'watched',label:'Watched',y:776},{id:'search',label:'Search',y:872},{id:'settings',label:'Settings',y:960}];
+const ITEMS=[{id:'live',label:'Live TV',y:160},{id:'chan',label:'TV Archive',y:248},{id:'arch',label:'Archive',y:336},{id:'movies',label:'Films',y:424},{id:'series',label:'Series',y:512},{id:'fav',label:'Favourites',y:600},{id:'persons',label:'People',y:688},{id:'watched',label:'Watched',y:776},{id:'search',label:'Search',y:872},{id:'settings',label:'Settings',y:960}];
 const menu=$('#menu'),panel=$('#panel'),pSel=$('#pSel'),pFoc=$('#pFoc');
 $('#logo').innerHTML=LOGO_C+LOGO_F;
 const mItems=ITEMS.map((it,i)=>{const d=el('div','item',{top:it.y+'px'});d.innerHTML='<div class="ic"><svg viewBox="0 0 56 56" fill="none">'+ICON[it.id]+'</svg></div><div class="lb">'+it.label+'</div>';
@@ -651,7 +651,7 @@ const AR=[
  {k:'ivi',title:'Films & Series',logo:'img/ivi.png',more:'All Ivi content',w:464,h:254,n:6,r:16,src:['nov2','vyb1','nov4','vyb3','nov1'],titles:['Never Let Me Go','Photo for memory','Fly, Little Feather','About people and war','The Handmaid’s Tale','']},
  {k:'pod',title:'Collections',w:344,h:482,n:6,r:16,focus:'img',fx:0,fy:0,fw:344,fh:482},
  {k:'vyb',title:'Editors’ Choice',w:464,h:254,n:5,r:16,titles:['Wild Love','Photo for memory','Night City: a detective story that never sleeps','About people and war','Scream']},
- {k:'chn',title:'Channel archive',w:184,h:184,n:11,r:16,src:['chn10','chn0','chn1','chn2','chn3','chn4','chn5','chn6','chn7','chn8','chn9']},
+ {k:'chn',title:'TV archive',w:184,h:184,n:11,r:16,src:['chn10','chn0','chn1','chn2','chn3','chn4','chn5','chn6','chn7','chn8','chn9']},
  {k:'prd',title:'Continue watching',w:464,h:254,n:5,r:16,titles:['No Room for Error','The Rublyovka Cop. New Year’s Mayhem','Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb','The Diamond Arm','Scream']}];
 AR.forEach(r=>{r.cards=Array.from({length:r.n},(_,i)=>({x:i*(r.w+24),w:(r.k==='chn'&&i===10)?176:r.w,h:(r.k==='chn'&&i===10)?176:r.h}));const last=r.cards[r.n-1];r.maxX=Math.max(0,last.x+last.w-1456);});
 function ArchPage(restore){
@@ -1528,7 +1528,7 @@ function SettingsPage(prev){
     else if(id==='format'){b=head('Live TV screen format','Choose how live channels are displayed');
       [['Grid','Channel grid with a schedule preview for the selected channel',PREV_GRID],['List','Channel list with extended information',PREV_LIST]].forEach((f,i)=>{const r=el('div','setr s3');r.innerHTML=radio(SET.format===i)+'<div><b>'+f[0]+'</b><span>'+f[1]+'</span></div>'+f[2];b.appendChild(r);o.rows.push({e:r,act:()=>{SET.format=i;o.build();}});});}
     else if(id==='nav'){b=head('Navigation panel','Set up the navigation menu the way you like by turning individual categories on or off.');
-      [['navF','Films'],['navS','Series'],['navC','Channel Archive']].forEach(([k,t])=>{const r=el('div','setr s1');r.innerHTML='<b>'+t+'</b>'+tog(SET[k]);b.appendChild(r);o.rows.push({e:r,act:()=>{SET[k]=!SET[k];r.querySelector('.stog').classList.toggle('on',SET[k]);}});});
+      [['navF','Films'],['navS','Series'],['navC','TV Archive']].forEach(([k,t])=>{const r=el('div','setr s1');r.innerHTML='<b>'+t+'</b>'+tog(SET[k]);b.appendChild(r);o.rows.push({e:r,act:()=>{SET[k]=!SET[k];r.querySelector('.stog').classList.toggle('on',SET[k]);}});});
       b.appendChild(el('div','sdiv'));
       [['Always collapsed','Icons only; expands over content on focus',PREV_COL],['Always open','On main screens the labelled menu stays visible',PREV_EXP]].forEach((f,i)=>{const r=el('div','setr s3 sm');r.innerHTML=radio(SET.menuMode===i)+'<div><b>'+f[0]+'</b><span>'+f[1]+'</span></div>'+f[2];b.appendChild(r);o.rows.push({e:r,act:()=>{SET.menuMode=i;o.build();}});});}
     else if(id==='sort'){b=head('Favourite channel order','Change the order of your favourite channels here.');b.classList.add('sscroll');o.list=el('div','abs',{left:'0',top:'0',width:'100%'});b.appendChild(o.list);
@@ -1745,7 +1745,7 @@ function ChannelsPage(top){
   const o={name:'chan',top:top?'chan':null,mode:'col',root:el('div','page'),area:'list',tab:0,tf:0,sx:0,li:0,sel:0,ly:0};
   o.back=el('div','back',{left:'168px',top:'56px'});o.back.innerHTML='<svg viewBox="0 0 24 24" width="28" height="28" fill="none"><path d="M15 5l-7 7 7 7" stroke="#F7F5F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   o.crumb=el('div','crumb',{left:top?'168px':'248px',top:'64px'});
-  if(top){o.crumb.innerHTML='<b>Channel Archive</b>';}else{o.root.appendChild(o.back);o.crumb.innerHTML='<b>Archive</b><span class="sl"> / </span><span class="sub">Channel Archive</span>';}
+  if(top){o.crumb.innerHTML='<b>TV Archive</b>';}else{o.root.appendChild(o.back);o.crumb.innerHTML='<b>Archive</b><span class="sl"> / </span><span class="sub">TV Archive</span>';}
   o.root.appendChild(o.crumb);o.root.appendChild(clockEl());
   const tclip=el('div','abs',{left:'152px',top:'152px',width:'1768px',height:'80px',overflow:'hidden'});o.root.appendChild(tclip);
   o.trow=el('div','abs',{left:'16px',top:'8px'});tclip.appendChild(o.trow);
@@ -1840,7 +1840,7 @@ function CatPage(catIdx,top,ch,opt={}){
   // header
   o.back=el('div','back',{left:'168px',top:'56px'});o.back.innerHTML='<svg viewBox="0 0 24 24" width="28" height="28" fill="none"><path d="M15 5l-7 7 7 7" stroke="#F7F5F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   o.crumb=el('div','crumb',{left:top?'168px':'248px',top:'64px'});
-  if(strip){if(!opt.menu)o.root.appendChild(o.back);o.crumb.style.left=opt.menu?'168px':'248px';o.crumb.innerHTML='<b>Channel Archive</b><span class="sl"> / </span><span class="sub"></span>';o.crumb.querySelector('.sub').textContent=ch.name;}
+  if(strip){if(!opt.menu)o.root.appendChild(o.back);o.crumb.style.left=opt.menu?'168px':'248px';o.crumb.innerHTML='<b>TV Archive</b><span class="sl"> / </span><span class="sub"></span>';o.crumb.querySelector('.sub').textContent=ch.name;}
   else if(top){o.crumb.innerHTML='<b></b>';o.crumb.querySelector('b').textContent=TOPP[top].title;}
   else{o.root.appendChild(o.back);o.crumb.innerHTML='<b>Archive</b><span class="sl"> / </span><span class="sub"></span>';if(ch)o.crumb.querySelector('.sub').textContent=ch.name;}
   o.root.appendChild(o.crumb);
