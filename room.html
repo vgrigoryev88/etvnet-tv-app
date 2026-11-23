@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>etvnet · Live TV in the room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#D7192D;--txt:#F7F5F5;--mute:rgba(247,245,245,.7)}
+  html,body{margin:0;height:100%;background:transparent;font-family:Inter,system-ui,sans-serif;color:var(--txt)}
+  .frame{position:relative;width:100%;aspect-ratio:4096/2294;overflow:hidden;border-radius:24px;background:#0D0B0B}
+  body.full .frame{height:100vh;aspect-ratio:auto}
+  .room{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;transition:transform 900ms cubic-bezier(.65,0,.25,1)}
+  .room img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  /* the backlight recolours to the focused tile: hue-only blend over the room */
+  .glow{position:absolute;inset:0;background:rgb(215,25,45);mix-blend-mode:color;opacity:.85;transition:background-color 700ms linear;pointer-events:none;
+        -webkit-mask:radial-gradient(60% 75% at 50% 46%,#000 55%,rgba(0,0,0,.55) 100%);mask:radial-gradient(60% 75% at 50% 46%,#000 55%,rgba(0,0,0,.55) 100%)}
+  .screen{position:absolute;left:24.26%;top:20.61%;width:51.49%;height:52.26%;background:#000;overflow:hidden;border-radius:2px}
+  .screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none}
+  .on .screen iframe{pointer-events:auto}
+  .cta{position:absolute;left:50%;top:46.7%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:12px;transition:opacity 300ms linear}
+  .pill{font:600 16px/1 Inter,system-ui,sans-serif;color:#fff;background:var(--red);border:0;border-radius:999px;padding:16px 26px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 10px 30px rgba(215,25,45,.4)}
+  .pill:focus-visible,.back:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .sub{font:400 13px/1.4 Inter,system-ui,sans-serif;color:var(--mute);text-shadow:0 1px 8px #000}
+  .on .cta{opacity:0;pointer-events:none}
+  .back{position:absolute;left:16px;top:16px;font:500 14px/1 Inter,system-ui,sans-serif;color:var(--txt);background:rgba(13,11,11,.72);border:1px solid rgba(247,245,245,.22);border-radius:999px;padding:11px 16px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 300ms linear;backdrop-filter:blur(6px)}
+  .on .back{opacity:1;pointer-events:auto;transition-delay:600ms}
+  .keys{position:absolute;right:16px;top:16px;font:400 13px/1 Inter,system-ui,sans-serif;color:var(--mute);background:rgba(13,11,11,.72);border-radius:999px;padding:11px 16px;opacity:0;transition:opacity 300ms linear;backdrop-filter:blur(6px)}
+  .keys b{font-weight:600;color:var(--txt)}
+  .on .keys{opacity:1;transition-delay:600ms}
+  @media (prefers-reduced-motion:reduce){.room,.glow{transition:none}}
+</style>
+</head>
+<body>
+<div class="frame" id="frame">
+  <div class="room" id="room">
+    <img class="bg" src="https://framerusercontent.com/images/KZ5k2GkYZLSKTkC4m3hUc4mRY.png" alt="A living room at night with a wall-mounted TV">
+    <div class="glow" id="glow"></div>
+    <div class="screen"><iframe id="tv" src="./index.html?screen=1&start=live" title="etvnet interactive prototype" tabindex="-1"></iframe></div>
+  </div>
+  <div class="cta" id="cta">
+    <button class="pill" id="turnOn"><svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M1 1.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 1 1.5z" fill="#fff"/></svg>Pick up the remote</button>
+    <span class="sub">Try the app on the TV</span>
+  </div>
+  <button class="back" id="back">← Back to the room</button>
+  <div class="keys"><b>← ↑ → ↓</b> move · <b>Enter</b> OK · <b>Esc</b> Return</div>
+</div>
+<script>
+  const frame=document.getElementById('frame'),room=document.getElementById('room'),tv=document.getElementById('tv'),glow=document.getElementById('glow');
+  const S={x:.2426,y:.2061,w:.5149,h:.5226};let on=false;
+  function place(){
+    if(!on){room.style.transform='none';return;}
+    const W=frame.clientWidth,H=frame.clientHeight;const k=0.86*Math.min(1/S.w,1/S.h);
+    const tx=W/2-k*W*(S.x+S.w/2),ty=H/2-k*H*(S.y+S.h/2);
+    room.style.transform='translate('+tx+'px,'+ty+'px) scale('+k+')';
+  }
+  function setOn(v){on=v;frame.classList.toggle('on',v);place();
+    if(v){setTimeout(()=>{try{tv.focus();tv.contentWindow.focus();}catch(e){}},700);document.getElementById('back').focus({preventScroll:true});}
+    else document.getElementById('turnOn').focus({preventScroll:true});}
+  document.getElementById('turnOn').addEventListener('click',()=>setOn(true));
+  document.getElementById('back').addEventListener('click',()=>setOn(false));
+  new ResizeObserver(place).observe(frame);
+  window.addEventListener('message',e=>{const d=e.data;if(d&&d.etv==='glow'&&typeof d.color==='string')glow.style.backgroundColor=d.color;});
+</script>
+</body>
+</html>
