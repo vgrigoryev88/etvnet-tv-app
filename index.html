@@ -73,7 +73,9 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 /* A · high-contrast light pill */
 .toast.tv-a,.toast.tv-a *{color:#0D0B0B!important}
 .toast.tv-a{display:flex;align-items:center;gap:16px;bottom:96px;background:#F7F5F5;border:0;color:#0D0B0B;padding:20px 40px;font:600 32px/40px Inter,sans-serif;box-shadow:0 16px 48px rgba(0,0,0,.6);transform:translate(-50%,24px);transition:opacity .2s,transform .3s cubic-bezier(.2,.8,.2,1)}
-.toast.tv-a.show{transform:translate(-50%,0)}.toast.tv-a.top{top:200px;bottom:auto;transform:translate(-50%,-24px)}.toast.tv-a.top.show{transform:translate(-50%,0)}.toast.tv-a.is-on .tic{color:var(--red)}
+.toast.tv-a.show{transform:translate(-50%,0)}.toast.tv-a.top{top:200px;bottom:auto;transform:translate(-50%,-24px)}.toast.tv-a.top.show{transform:translate(-50%,0)}
+.toast.tv-a.nudge{animation:tnudge 180ms cubic-bezier(.2,.8,.2,1)}@keyframes tnudge{0%{transform:translate(-50%,0) scale(1)}45%{transform:translate(-50%,0) scale(1.04)}100%{transform:translate(-50%,0) scale(1)}}
+@media (prefers-reduced-motion:reduce){.toast.tv-a.nudge{animation:none}}.toast.tv-a.is-on .tic{color:var(--red)}
 /* B · dark card with accent icon badge */
 .toast.tv-b{display:flex;align-items:center;gap:20px;bottom:96px;background:#2A2525;border:2px solid #5a5454;color:var(--txt);border-radius:24px;padding:16px 36px 16px 16px;font:600 32px/40px Inter,sans-serif;box-shadow:0 20px 56px rgba(0,0,0,.7);transform:translate(-50%,24px);transition:opacity .2s,transform .3s cubic-bezier(.2,.8,.2,1)}
 .toast.tv-b.show{transform:translate(-50%,0)}.toast.tv-b .tic{width:64px;height:64px;border-radius:16px;background:#3a3434;align-items:center;justify-content:center;color:var(--txt)}.toast.tv-b.is-on .tic{background:var(--red);color:#fff}
@@ -615,7 +617,13 @@ function el(tag,cls,css,txt){const e=document.createElement(tag);if(cls)e.classN
 function img(src,x,y){const i=el('img');i.src=src;i.style.left=x+'px';i.style.top=y+'px';return i;}
 const ring=$('#ring'),dim=$('#dim'),pagesEl=$('#pages');
 /* toast: light high-contrast pill (usability-test update: more visible, stays 3 s) */
-let toastT;function toast(t){const e=$('#toast');e.className='toast tv-a'+(P&&P.name==='player'?' top':'');e.textContent=t;void e.offsetWidth;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),3000);}
+let toastT;function toast(t){const e=$('#toast'),top=P&&P.name==='player';
+  const live=e.classList.contains('show')&&e.classList.contains('top')===!!top;
+  if(live){ /* already on screen: no re-entry; same text → nudge, new text → swap the text */
+    if(e.textContent!==t){e.textContent=t;}
+    e.classList.remove('nudge');void e.offsetWidth;e.classList.add('nudge');}
+  else{e.className='toast tv-a'+(top?' top':'');e.textContent=t;void e.offsetWidth;e.classList.add('show');}
+  clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show','nudge'),3000);}
 function placeRing(x,y,w,h,rad,d,show){
   ring.style.transition=T(['transform','width','height','border-radius'],d,M.move)+','+T(['opacity'],M.fast,'linear');
   ring.style.transform='translate('+x+'px,'+y+'px)';ring.style.width=w+'px';ring.style.height=h+'px';ring.style.borderRadius=rad+'px';
