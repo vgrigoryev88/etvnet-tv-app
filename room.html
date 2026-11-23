@@ -86,7 +86,7 @@
   if(!matchMedia('(max-width:700px)').matches)tv.src=tv.dataset.src;
   const S={x:.2426,y:.2061,w:.5149,h:.5226};let on=false;
   function place(){
-    const W=frame.clientWidth,H=frame.clientHeight;remote.style.fontSize=Math.max(9,Math.min(18,W/1200*16))+'px';
+    const W=frame.clientWidth,H=frame.clientHeight;remote.style.fontSize=Math.min(18,W/1200*16)+'px';
     if(!on){room.style.transform='none';return;}
     const k=Math.min(.76/S.w,.86/S.h);const cx=W*.43,cy=H/2;
     room.style.transform='translate('+(cx-k*W*(S.x+S.w/2))+'px,'+(cy-k*H*(S.y+S.h/2))+'px) scale('+k+')';
