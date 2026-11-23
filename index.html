@@ -2298,7 +2298,7 @@ $('#full').addEventListener('click',()=>document.body.classList.contains('full')
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('full'))setFull(false);});
 if(0)document.addEventListener('keydown',e=>{if(['f','F','a','A'].includes(e.key)&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();e.stopPropagation();document.body.classList.contains('full')?exitFull():goFull();}},true);
 if(/[?&]full\b/.test(location.search)||location.hash==='#full')setFull(true);
-P=ArchPage(null);pagesEl.appendChild(P.root);syncMenu(false);P.layout(false);spec();if(window.top===window.self)vp.focus();
+const START_LIVE=/[?&]start=live/.test(location.search);if(START_LIVE){st.sel=st.mf=ITEMS.findIndex(x=>x.id==='live');}P=START_LIVE?LivePage():ArchPage(null);pagesEl.appendChild(P.root);syncMenu(false);P.layout(false);spec();if(window.top===window.self)vp.focus();
 
 
 document.querySelectorAll('[data-wv]').forEach(b=>b.addEventListener('click',()=>{WATCHED_EMPTY=b.dataset.wv==='0';document.querySelectorAll('[data-wv]').forEach(x=>x.setAttribute('aria-pressed',x===b));
@@ -2520,8 +2520,6 @@ const LT_NAMES=['Publika','2×2','RBC','Crime and Punishment','Kinohit','Zee TV'
  const tick=()=>{const rg=document.getElementById('ring');let col=null;if(rg&&getComputedStyle(rg).opacity>0.05){const r=rg.getBoundingClientRect();const x=r.left+r.width/2,y=r.top+r.height/2;for(const el of document.elementsFromPoint(x,y)){if(el.tagName==='IMG'&&el.complete&&el.naturalWidth){col=avg(el);break}const bg=el!==rg&&getComputedStyle(el).backgroundImage;if(bg&&bg.startsWith('linear-gradient')){const m=bg.match(/rgba?\(([^)]+)\)/);if(m){col=m[1].split(',').slice(0,3).map(v=>+v);break}}}}
   const c=col?'rgb('+col.join(',')+')':'rgb(215,25,45)';if(c!==last){last=c;parent.postMessage({etv:'glow',color:c},'*')}};
  setInterval(tick,250);
- /* open Live TV first, like the hero picture */
- if(/[?&]start=live/.test(location.search)){const seq=['ArrowLeft','ArrowUp','ArrowUp','ArrowUp','ArrowUp','ArrowUp','ArrowUp','ArrowUp','ArrowUp','Enter'];let i=0;const go=()=>{if(i>=seq.length)return;document.dispatchEvent(new KeyboardEvent('keydown',{key:seq[i],bubbles:true}));document.dispatchEvent(new KeyboardEvent('keyup',{key:seq[i],bubbles:true}));i++;setTimeout(go,i===1?450:90)};setTimeout(go,900);}
 })();
 </script>
 </body>

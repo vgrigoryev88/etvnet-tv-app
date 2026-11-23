@@ -6,64 +6,114 @@
 <title>etvnet · Live TV in the room</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--red:#D7192D;--txt:#F7F5F5;--mute:rgba(247,245,245,.7)}
+  :root{--red:#D7192D;--txt:#F7F5F5;--mute:rgba(247,245,245,.62)}
   html,body{margin:0;height:100%;background:transparent;font-family:Inter,system-ui,sans-serif;color:var(--txt)}
-  .frame{position:relative;width:100%;aspect-ratio:4096/2294;overflow:hidden;border-radius:24px;background:#0D0B0B}
-  body.full .frame{height:100vh;aspect-ratio:auto}
+  .frame{position:relative;width:100%;aspect-ratio:4096/2294;overflow:hidden;border-radius:24px;background:#0D0B0B;user-select:none}
   .room{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;transition:transform 900ms cubic-bezier(.65,0,.25,1)}
   .room img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  /* the backlight recolours to the focused tile: hue-only blend over the room */
   .glow{position:absolute;inset:0;background:rgb(215,25,45);mix-blend-mode:color;opacity:0;transition:background-color 700ms linear,opacity 700ms linear;pointer-events:none;
         -webkit-mask:radial-gradient(46% 62% at 50% 46%,#000 40%,rgba(0,0,0,0) 100%);mask:radial-gradient(46% 62% at 50% 46%,#000 40%,rgba(0,0,0,0) 100%)}
   .glow.tint{opacity:.75}
-  .screen::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45);transition:opacity 400ms linear;pointer-events:none}
-  .on .screen::after{opacity:0}
   .screen{position:absolute;left:24.26%;top:20.61%;width:51.49%;height:52.26%;background:#000;overflow:hidden;border-radius:2px}
   .screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none}
   .on .screen iframe{pointer-events:auto}
-  .cta{position:absolute;left:50%;top:46.7%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:12px;transition:opacity 300ms linear}
-  .pill{font:600 16px/1 Inter,system-ui,sans-serif;color:#fff;background:var(--red);border:0;border-radius:999px;padding:16px 26px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 10px 30px rgba(215,25,45,.4)}
-  .pill:focus-visible,.back:focus-visible{outline:3px solid #fff;outline-offset:3px}
-  .sub{font:400 13px/1.4 Inter,system-ui,sans-serif;color:var(--mute);text-shadow:0 1px 8px #000}
-  .on .cta{opacity:0;pointer-events:none}
-  .back{position:absolute;left:16px;top:16px;font:500 14px/1 Inter,system-ui,sans-serif;color:var(--txt);background:rgba(13,11,11,.72);border:1px solid rgba(247,245,245,.22);border-radius:999px;padding:11px 16px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 300ms linear;backdrop-filter:blur(6px)}
-  .on .back{opacity:1;pointer-events:auto;transition-delay:600ms}
-  .keys{position:absolute;right:16px;top:16px;font:400 13px/1 Inter,system-ui,sans-serif;color:var(--mute);background:rgba(13,11,11,.72);border-radius:999px;padding:11px 16px;opacity:0;transition:opacity 300ms linear;backdrop-filter:blur(6px)}
+  .still{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:block;transition:opacity 500ms linear 500ms}
+  .on .still{opacity:0;pointer-events:none}
+
+  .remote{position:absolute;font-size:16px;width:8.5em;padding:1.4em 0 1.6em;border-radius:4.25em;
+          background:linear-gradient(180deg,#1d1919,#121010);box-shadow:inset 0 0 0 1px #2e2828,inset 0 1px 0 rgba(255,255,255,.05),0 1.4em 3em rgba(0,0,0,.6);
+          display:flex;flex-direction:column;align-items:center;gap:1.1em;
+          right:4.5%;bottom:5%;transform:rotate(-12deg) scale(.72);transform-origin:50% 100%;
+          transition:right 900ms cubic-bezier(.65,0,.25,1),bottom 900ms cubic-bezier(.65,0,.25,1),transform 900ms cubic-bezier(.65,0,.25,1)}
+  .remote:hover{transform:rotate(-12deg) scale(.76) translateY(-.3em)}
+  .on .remote,.on .remote:hover{right:4%;bottom:50%;transform:translateY(50%) rotate(0) scale(1)}
+  .brand{font:600 .78em/1 Inter,system-ui,sans-serif;color:#6f6767;letter-spacing:.02em}
+  .rbtn{position:relative;border:0;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#cfc8c8;background:#2a2525;transition:background-color 120ms linear}
+  .rbtn.on,.rbtn:active{background:var(--red);color:#fff}
+  .rbtn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .power{width:3.6em;height:3.6em;border-radius:50%;background:var(--red);color:#fff}
+  .power.pulse{animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(215,25,45,.65)}70%{box-shadow:0 0 0 1em rgba(215,25,45,0)}100%{box-shadow:0 0 0 0 rgba(215,25,45,0)}}
+  .on .power{background:#2a2525;color:var(--red)}
+  .plabel{font:600 .78em/1.25 Inter,system-ui,sans-serif;color:var(--txt);margin-top:-.5em;text-align:center}
+  .dpad{position:relative;width:7.2em;height:7.2em;border-radius:50%;background:#2a2525;overflow:hidden}
+  .dpad .w{position:absolute;left:50%;top:50%;width:3.6em;height:3.6em;transform-origin:0 0;background:transparent;border-radius:0}
+  .dpad .w svg{position:absolute;left:1.5em;top:1.5em;width:1.05em;height:1.05em}
+  .dpad .w.on,.dpad .w:active{background:var(--red)}
+  .dpad .ok{position:absolute;left:50%;top:50%;width:3em;height:3em;margin:-1.5em 0 0 -1.5em;border-radius:50%;background:#3a3434;font:600 .9em/1 Inter,system-ui,sans-serif;color:var(--txt);z-index:2;box-shadow:0 0 0 .35em #2a2525}
+  .dpad .ok.on,.dpad .ok:active{background:var(--red)}
+  .ret{width:3.4em;height:3.4em;border-radius:50%}
+  .rlabel{font:500 .7em/1 Inter,system-ui,sans-serif;color:#918989;margin-top:-.6em}
+  .dis .dpad,.dis .ret,.dis .rlabel{opacity:.35;pointer-events:none}
+  .keys{position:absolute;right:1.5%;bottom:3.5%;font:400 12px/1.45 Inter,system-ui,sans-serif;color:var(--mute);text-align:center;width:13em;opacity:0;transition:opacity 300ms linear}
   .keys b{font-weight:600;color:var(--txt)}
-  .on .keys{opacity:1;transition-delay:600ms}
-  @media (prefers-reduced-motion:reduce){.room,.glow{transition:none}}
+  .on .keys{opacity:1;transition-delay:700ms}
+  @media (prefers-reduced-motion:reduce){.room,.glow,.remote,.still{transition:none}.power.pulse{animation:none}}
 </style>
 </head>
 <body>
-<div class="frame" id="frame">
+<div class="frame dis" id="frame">
   <div class="room" id="room">
-    <img class="bg" src="https://framerusercontent.com/images/KZ5k2GkYZLSKTkC4m3hUc4mRY.png" alt="A living room at night with a wall-mounted TV">
+    <img class="bg" src="https://framerusercontent.com/images/KZ5k2GkYZLSKTkC4m3hUc4mRY.png" alt="A living room at night with a wall-mounted TV showing the etvnet app">
     <div class="glow" id="glow"></div>
-    <div class="screen"><iframe id="tv" src="./index.html?screen=1&start=live" title="etvnet interactive prototype" tabindex="-1"></iframe></div>
+    <div class="screen">
+      <iframe id="tv" src="./index.html?screen=1&start=live" title="etvnet interactive prototype" tabindex="-1"></iframe>
+      <img class="still" src="https://framerusercontent.com/images/Sul2VZjWUoN6jSM2umgqGU1lY.png" alt="">
+    </div>
   </div>
-  <div class="cta" id="cta">
-    <button class="pill" id="turnOn"><svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M1 1.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 1 1.5z" fill="#fff"/></svg>Pick up the remote</button>
-    <span class="sub">Try the app on the TV</span>
+
+  <div class="remote" id="remote" aria-label="Remote control">
+    <span class="brand">etvnet</span>
+    <button class="rbtn power pulse" id="power" aria-label="Turn on the TV"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg></button>
+    <span class="plabel" id="plabel">Turn on<br>the TV</span>
+    <div class="dpad">
+      <button class="rbtn w" data-key="ArrowUp" aria-label="Up" style="transform:rotate(-135deg)"><svg viewBox="0 0 16 16" fill="none" stroke="#e8e2e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)"><path d="M4 10l4-4 4 4"/></svg></button>
+      <button class="rbtn w" data-key="ArrowRight" aria-label="Right" style="transform:rotate(-45deg)"><svg viewBox="0 0 16 16" fill="none" stroke="#e8e2e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(45deg)"><path d="M6 4l4 4-4 4"/></svg></button>
+      <button class="rbtn w" data-key="ArrowDown" aria-label="Down" style="transform:rotate(45deg)"><svg viewBox="0 0 16 16" fill="none" stroke="#e8e2e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(-45deg)"><path d="M4 6l4 4 4-4"/></svg></button>
+      <button class="rbtn w" data-key="ArrowLeft" aria-label="Left" style="transform:rotate(135deg)"><svg viewBox="0 0 16 16" fill="none" stroke="#e8e2e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(-135deg)"><path d="M10 4L6 8l4 4"/></svg></button>
+      <button class="rbtn ok" data-key="Enter" aria-label="OK">OK</button>
+    </div>
+    <button class="rbtn ret" data-key="Escape" aria-label="Return"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+    <span class="rlabel">Return</span>
   </div>
-  <button class="back" id="back">← Back to the room</button>
-  <div class="keys"><b>← ↑ → ↓</b> move · <b>Enter</b> OK · <b>Esc</b> Return</div>
+  <div class="keys"><b>← ↑ → ↓</b> move · <b>Enter</b> OK<br><b>Esc</b> Return</div>
 </div>
 <script>
-  const frame=document.getElementById('frame'),room=document.getElementById('room'),tv=document.getElementById('tv'),glow=document.getElementById('glow');
+  const frame=document.getElementById('frame'),room=document.getElementById('room'),tv=document.getElementById('tv'),glow=document.getElementById('glow'),remote=document.getElementById('remote'),power=document.getElementById('power'),plabel=document.getElementById('plabel');
   const S={x:.2426,y:.2061,w:.5149,h:.5226};let on=false;
   function place(){
+    const W=frame.clientWidth,H=frame.clientHeight;remote.style.fontSize=Math.max(9,Math.min(18,W/1200*16))+'px';
     if(!on){room.style.transform='none';return;}
-    const W=frame.clientWidth,H=frame.clientHeight;const k=0.86*Math.min(1/S.w,1/S.h);
-    const tx=W/2-k*W*(S.x+S.w/2),ty=H/2-k*H*(S.y+S.h/2);
-    room.style.transform='translate('+tx+'px,'+ty+'px) scale('+k+')';
+    const k=Math.min(.76/S.w,.86/S.h);const cx=W*.43,cy=H/2;
+    room.style.transform='translate('+(cx-k*W*(S.x+S.w/2))+'px,'+(cy-k*H*(S.y+S.h/2))+'px) scale('+k+')';
   }
-  function setOn(v){on=v;frame.classList.toggle('on',v);place();
-    if(v){setTimeout(()=>{try{tv.focus();tv.contentWindow.focus();}catch(e){}},700);document.getElementById('back').focus({preventScroll:true});}
-    else document.getElementById('turnOn').focus({preventScroll:true});}
-  document.getElementById('turnOn').addEventListener('click',()=>setOn(true));
-  document.getElementById('back').addEventListener('click',()=>setOn(false));
+  function focusTV(){try{tv.contentWindow.focus();}catch(e){}}
+  function setOn(v){on=v;frame.classList.toggle('on',v);frame.classList.toggle('dis',!v);place();
+    power.classList.remove('pulse');power.setAttribute('aria-label',v?'Turn off the TV':'Turn on the TV');plabel.innerHTML=v?'Turn off':'Turn on<br>the TV';
+    if(v)setTimeout(focusTV,700);else{glow.classList.remove('tint');glow.style.backgroundColor='rgb(215,25,45)';}}
+  power.addEventListener('click',()=>setOn(!on));
   new ResizeObserver(place).observe(frame);
-  window.addEventListener('message',e=>{const d=e.data;if(d&&d.etv==='glow'&&typeof d.color==='string'){glow.style.backgroundColor=d.color;const m=d.color.match(/\d+/g).map(Number);const isRed=m[0]>150&&m[1]<70&&m[2]<80;glow.classList.toggle('tint',!isRed);}});
+
+  const send=(key,type)=>{try{tv.contentDocument.dispatchEvent(new KeyboardEvent(type,{key,bubbles:true}));}catch(e){}};
+  let rep=null;
+  remote.querySelectorAll('[data-key]').forEach(b=>{
+    const k=b.dataset.key;
+    b.addEventListener('pointerdown',e=>{if(!on)return;e.preventDefault();b.classList.add('on');send(k,'keydown');
+      if(k.startsWith('Arrow')){clearTimeout(rep);rep=setTimeout(function r(){send(k,'keydown');rep=setTimeout(r,110);},420);}});
+    const up=()=>{if(!b.classList.contains('on'))return;b.classList.remove('on');clearTimeout(rep);send(k,'keyup');setTimeout(focusTV,0);};
+    b.addEventListener('pointerup',up);b.addEventListener('pointerleave',up);b.addEventListener('pointercancel',up);
+  });
+  const MAP={ArrowUp:'ArrowUp',ArrowDown:'ArrowDown',ArrowLeft:'ArrowLeft',ArrowRight:'ArrowRight',Enter:'Enter',Escape:'Escape',Backspace:'Escape'};
+  const btn=k=>remote.querySelector('[data-key="'+MAP[k]+'"]');
+  function hook(w,forward){
+    w.addEventListener('keydown',e=>{if(!on||!MAP[e.key]||!e.isTrusted)return;const b=btn(e.key);b&&b.classList.add('on');if(forward){e.preventDefault();send(MAP[e.key],'keydown');}},true);
+    w.addEventListener('keyup',e=>{if(!MAP[e.key]||!e.isTrusted)return;const b=btn(e.key);b&&b.classList.remove('on');if(forward&&on)send(MAP[e.key],'keyup');},true);
+  }
+  hook(window,true);
+  tv.addEventListener('load',()=>{try{hook(tv.contentWindow,false);}catch(e){}});
+  window.addEventListener('message',e=>{const d=e.data;if(!on||!d||d.etv!=='glow'||typeof d.color!=='string')return;
+    glow.style.backgroundColor=d.color;const m=d.color.match(/\d+/g).map(Number);const mx=Math.max(...m),mn=Math.min(...m);
+    const isRed=m[0]>150&&m[1]<70&&m[2]<80,isGrey=mx-mn<40;glow.classList.toggle('tint',!isRed&&!isGrey);});
 </script>
 </body>
 </html>
