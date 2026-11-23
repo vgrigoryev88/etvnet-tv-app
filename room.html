@@ -23,9 +23,9 @@
   .remote{position:absolute;font-size:16px;width:8.5em;padding:1.4em 0 1.6em;border-radius:4.25em;
           background:linear-gradient(180deg,#1d1919,#121010);box-shadow:inset 0 0 0 1px #2e2828,inset 0 1px 0 rgba(255,255,255,.05),0 1.4em 3em rgba(0,0,0,.6);
           display:flex;flex-direction:column;align-items:center;gap:1.1em;
-          right:4.5%;bottom:5%;transform:rotate(-12deg) scale(.72);transform-origin:50% 100%;
+          right:27%;bottom:3%;transform:rotate(-8deg) scale(1.4);transform-origin:50% 100%;
           transition:right 900ms cubic-bezier(.65,0,.25,1),bottom 900ms cubic-bezier(.65,0,.25,1),transform 900ms cubic-bezier(.65,0,.25,1)}
-  .remote:hover{transform:rotate(-12deg) scale(.76) translateY(-.3em)}
+  .remote:hover{transform:rotate(-8deg) scale(1.43) translateY(-.2em)}
   .on .remote,.on .remote:hover{right:4%;bottom:50%;transform:translateY(50%) rotate(0) scale(1)}
   .brand{font:600 .78em/1 Inter,system-ui,sans-serif;color:#6f6767;letter-spacing:.02em}
   .rbtn{position:relative;border:0;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#cfc8c8;background:#2a2525;transition:background-color 120ms linear}
@@ -33,7 +33,8 @@
   .rbtn:focus-visible{outline:2px solid #fff;outline-offset:3px}
   .power{width:3.6em;height:3.6em;border-radius:50%;background:var(--red);color:#fff}
   .power.pulse{animation:pulse 1.8s ease-out infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(215,25,45,.65)}70%{box-shadow:0 0 0 1em rgba(215,25,45,0)}100%{box-shadow:0 0 0 0 rgba(215,25,45,0)}}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(215,25,45,.8),0 0 0 0 rgba(215,25,45,.5)}60%{box-shadow:0 0 0 .9em rgba(215,25,45,0),0 0 0 1.8em rgba(215,25,45,0)}100%{box-shadow:0 0 0 0 rgba(215,25,45,0),0 0 0 0 rgba(215,25,45,0)}}
+  .power.pulse svg{animation:beat 1.8s ease-in-out infinite}@keyframes beat{0%,100%{transform:scale(1)}30%{transform:scale(1.12)}}
   .on .power{background:#2a2525;color:var(--red)}
   .plabel{font:600 .78em/1.25 Inter,system-ui,sans-serif;color:var(--txt);margin-top:-.5em;text-align:center}
   .dpad{position:relative;width:7.2em;height:7.2em;border-radius:50%;background:#2a2525;overflow:hidden}
@@ -48,7 +49,9 @@
   .keys{position:absolute;right:1.5%;bottom:3.5%;font:400 12px/1.45 Inter,system-ui,sans-serif;color:var(--mute);text-align:center;width:13em;opacity:0;transition:opacity 300ms linear}
   .keys b{font-weight:600;color:var(--txt)}
   .on .keys{opacity:1;transition-delay:700ms}
-  @media (prefers-reduced-motion:reduce){.room,.glow,.remote,.still{transition:none}.power.pulse{animation:none}}
+  @media (prefers-reduced-motion:reduce){.room,.glow,.remote,.still{transition:none}.power.pulse,.power.pulse svg{animation:none}}
+  /* phones: a still image only */
+  @media (max-width:700px){.remote,.keys{display:none}.screen iframe{display:none}}
 </style>
 </head>
 <body>
@@ -57,15 +60,15 @@
     <img class="bg" src="https://framerusercontent.com/images/KZ5k2GkYZLSKTkC4m3hUc4mRY.png" alt="A living room at night with a wall-mounted TV showing the etvnet app">
     <div class="glow" id="glow"></div>
     <div class="screen">
-      <iframe id="tv" src="./index.html?screen=1&start=live" title="etvnet interactive prototype" tabindex="-1"></iframe>
+      <iframe id="tv" data-src="./index.html?screen=1&start=live" title="etvnet interactive prototype" tabindex="-1"></iframe>
       <img class="still" src="https://framerusercontent.com/images/Sul2VZjWUoN6jSM2umgqGU1lY.png" alt="">
     </div>
   </div>
 
   <div class="remote" id="remote" aria-label="Remote control">
     <span class="brand">etvnet</span>
-    <button class="rbtn power pulse" id="power" aria-label="Turn on the TV"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg></button>
-    <span class="plabel" id="plabel">Turn on<br>the TV</span>
+    <button class="rbtn power pulse" id="power" aria-label="Launch the interactive prototype"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg></button>
+    <span class="plabel" id="plabel">Launch<br>prototype</span>
     <div class="dpad">
       <button class="rbtn w" data-key="ArrowUp" aria-label="Up" style="transform:rotate(-135deg)"><svg viewBox="0 0 16 16" fill="none" stroke="#e8e2e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(135deg)"><path d="M4 10l4-4 4 4"/></svg></button>
       <button class="rbtn w" data-key="ArrowRight" aria-label="Right" style="transform:rotate(-45deg)"><svg viewBox="0 0 16 16" fill="none" stroke="#e8e2e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(45deg)"><path d="M6 4l4 4-4 4"/></svg></button>
@@ -80,6 +83,7 @@
 </div>
 <script>
   const frame=document.getElementById('frame'),room=document.getElementById('room'),tv=document.getElementById('tv'),glow=document.getElementById('glow'),remote=document.getElementById('remote'),power=document.getElementById('power'),plabel=document.getElementById('plabel');
+  if(!matchMedia('(max-width:700px)').matches)tv.src=tv.dataset.src;
   const S={x:.2426,y:.2061,w:.5149,h:.5226};let on=false;
   function place(){
     const W=frame.clientWidth,H=frame.clientHeight;remote.style.fontSize=Math.max(9,Math.min(18,W/1200*16))+'px';
@@ -89,7 +93,7 @@
   }
   function focusTV(){try{tv.contentWindow.focus();}catch(e){}}
   function setOn(v){on=v;frame.classList.toggle('on',v);frame.classList.toggle('dis',!v);place();
-    power.classList.remove('pulse');power.setAttribute('aria-label',v?'Turn off the TV':'Turn on the TV');plabel.innerHTML=v?'Turn off':'Turn on<br>the TV';
+    power.classList.toggle('pulse',!v);power.setAttribute('aria-label',v?'Close the prototype':'Launch the interactive prototype');plabel.innerHTML=v?'Close<br>prototype':'Launch<br>prototype';
     if(v)setTimeout(focusTV,700);else{glow.classList.remove('tint');glow.style.backgroundColor='rgb(215,25,45)';}}
   power.addEventListener('click',()=>setOn(!on));
   new ResizeObserver(place).observe(frame);
