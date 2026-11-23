@@ -1621,6 +1621,8 @@ function ContentPage(kind,n,root='Archive',ep=null,person=null){
   o.S=person?[{title:'Films featuring',count:'36 films',w:464,h:254,r:16,pk:'film',items:mkP('Film title',6,'128 min')},{title:'Series featuring',count:'12 series',w:464,h:254,r:16,pk:'series',items:mkP('Series title',6,'4 seasons')},{title:'Shows featuring',count:'12 shows',w:464,h:254,r:16,pk:'show',items:mkP('Show title',6,'16 seasons')}]:[ep?{title:'Other '+(ep.it.leaf==='Episode'?'episodes':'episodes')+(ep.path.length?' · '+ep.path[ep.path.length-1].name:''),w:464,h:254,r:16,eps:true,items:ep.eps}:{title:'Recently added',w:464,h:254,r:16,items:mk('Content title',8)},
        {title:'Cast',w:448,h:176,r:16,person:true,items:CAST.map((p,i)=>({...p,tint:TINT[(i+n)%TINT.length]}))},
        {title:'Recommendations',w:464,h:254,r:16,items:mk('Recommendation',8)}];
+  /* a film has no nested content: only Cast + Recommendations */
+  if(!person&&!ep&&kind==='film')o.S=o.S.filter(S=>S.title!=='Recently added');
   o.secs=o.S.map(S=>{S.cards=S.items.map((_,i)=>({x:i*(S.w+24)}));const last=S.cards[S.cards.length-1];S.maxX=Math.max(0,last.x+S.w-1704);
     const s=el('div','asec',{left:'168px'});s.appendChild(el('div','h',null,S.title));if(S.count)s.appendChild(el('div','hc',null,S.count));const strip=el('div','st');s.appendChild(strip);
     const cards=S.items.map((it,i)=>{const c=el('div','card',{left:S.cards[i].x+'px'});
