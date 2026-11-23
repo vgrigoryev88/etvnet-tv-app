@@ -409,7 +409,7 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 .cip .sk{display:block;height:24px;border-radius:8px;background:#242020;flex:none}
 .cisk2{display:flex;flex-direction:column;gap:12px;padding:6px 0;height:80px;box-sizing:border-box;justify-content:center}.cisk2 .sk{height:28px}
 .asec .h.lg{display:flex;align-items:center;gap:20px}.asec .h.lg img{position:static;height:48px;width:auto;border-radius:0}
-.ivmore{border-radius:16px;background:#242020;box-shadow:inset 0 0 0 2px #434141;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px}.ivmore img{position:static!important;width:200px;height:auto;border-radius:0!important}.ivmore b{font:500 28px/32px Inter,sans-serif;color:var(--txt)}
+.ivmore{border-radius:16px;background:#242020;box-shadow:inset 0 0 0 2px #434141;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px}.ivmore img{position:static!important;width:200px;height:auto;border-radius:0!important}.ivmore b{font:500 28px/32px Inter,sans-serif;color:var(--txt)}.ivmore.fillon{text-align:center;padding:0 16px;box-sizing:border-box;transition:background-color 120ms linear}.card.on .ivmore.fillon{background:var(--red);box-shadow:none}
 
 .chcard.pp{width:600px;height:128px;padding:0 8px;gap:24px;border-radius:16px}
 .chcard.pp .chtile{width:112px;height:112px;border-radius:16px}
@@ -687,7 +687,7 @@ const AR=[
  {k:'cat',title:'Categories',w:552,h:176,n:9,r:16,catc:true},
  {k:'nov',title:'New',w:464,h:254,n:5,r:16,titles:['The Age of Happiness','The Handmaid’s Tale','Never Let Me Go','Call Yermolov!','Fly, Little Feather']},
  {k:'ivi',title:'Movies & Series',logo:'img/ivi.png',more:'All Ivi content',w:464,h:254,n:6,r:16,src:['nov2','vyb1','nov4','vyb3','nov1'],titles:['Never Let Me Go','Photo for memory','Fly, Little Feather','About people and war','The Handmaid’s Tale','']},
- {k:'pod',title:'Collections',w:344,h:482,n:6,r:16,focus:'img',fx:0,fy:0,fw:344,fh:482},
+ {k:'pod',title:'Collections',more:'All collections',w:344,h:482,n:6,r:16},
  {k:'vyb',title:'Editors’ Choice',w:464,h:254,n:5,r:16,titles:['Wild Love','Photo for memory','Night City: a detective story that never sleeps','About people and war','Scream']},
  {k:'chn',title:'TV archive',w:184,h:184,n:11,r:16,src:['chn10','chn0','chn1','chn2','chn3','chn4','chn5','chn6','chn7','chn8','chn9']},
  {k:'prd',title:'Continue watching',w:464,h:254,n:5,r:16,titles:['No Room for Error','The Rublyovka Cop. New Year’s Mayhem','Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb','The Diamond Arm','Scream']}];
@@ -704,7 +704,7 @@ const arKind=(r,c)=>posterKind(r.src?r.src[c]:r.k+c);
 function posterCard(key,w,h){const k=key.replace(/\d+$/,''),i=+key.match(/\d+$/)[0],P=POSTER[k];
   const b=el('div','pst',{width:w+'px',height:h+'px'});
   const im=el('img');im.src=POSTER_SPRITE;im.alt='';im.style.cssText='position:absolute;left:0;top:0;width:'+w+'px;height:'+h+'px;object-fit:none;object-position:'+(-i*P.w)+'px '+(-P.y)+'px;border-radius:0';b.appendChild(im);
-  if(P.coll){b.classList.add('coll');const t=el('b',null,null,COLLS[i]||'');b.appendChild(t);return b;}
+  if(P.coll){b.classList.add('coll');const t=el('b',null,null,(COLLS[i]&&COLLS[i].t)||'');b.appendChild(t);return b;}
   const it=P.items[i]||{};let html='';
   if(it.nw)html+='<i class="nw">New</i>';
   html+='<i class="rt">'+STAR+'4.9</i>';
@@ -716,8 +716,9 @@ function ArchPage(restore){
   if(restore)Object.assign(o,{fr:restore.fr,fc:{...restore.fc},sx:{...restore.sx}});
   const clip=el('div','clip',{left:(X-16)+'px',width:(1920-X+16)+'px'});o.root.appendChild(clip);
   AR.forEach(r=>{const s=el('div','asec');const hh=el('div','h',null,r.title);if(r.logo){hh.classList.add('lg');hh.innerHTML='<img src="'+r.logo+'" alt="Ivi"><span></span>';hh.querySelector('span').textContent=r.title;}s.appendChild(hh);const strip=el('div','st');s.appendChild(strip);
-    const cards=r.cards.map((c,i)=>{const d=el('div','card',{left:c.x+'px','--r':r.r+'px'});if(r.more&&i===r.n-1){const m=el('div','ivmore',{width:c.w+'px',height:c.h+'px'});m.innerHTML='<img src="'+r.logo+'" alt=""><b></b>';m.querySelector('b').textContent=r.more+'  →';d.appendChild(m);strip.appendChild(d);return {d,t:null};}if(r.catc){const cc=el('div','catc');cc.innerHTML='<img class="r" src="c/catcvr'+i+'.jpg" alt=""><img class="f" src="c/catcvf'+i+'.jpg" alt=""><b></b>';cc.querySelector('b').textContent=CAT_T[i];d.appendChild(cc);strip.appendChild(d);return {d,t:null};}
+    const cards=r.cards.map((c,i)=>{const d=el('div','card',{left:c.x+'px','--r':r.r+'px'});if(r.more&&i===r.n-1){const m=el('div','ivmore',{width:c.w+'px',height:c.h+'px'});m.innerHTML=(r.logo?'<img src="'+r.logo+'" alt="">':'')+'<b></b>';if(!r.logo)m.classList.add('fillon');m.querySelector('b').textContent=r.logo?r.more+'  →':r.more;d.appendChild(m);strip.appendChild(d);return {d,t:null};}if(r.catc){const cc=el('div','catc');cc.innerHTML='<img class="r" src="c/catcvr'+i+'.jpg" alt=""><img class="f" src="c/catcvf'+i+'.jpg" alt=""><b></b>';cc.querySelector('b').textContent=CAT_T[i];d.appendChild(cc);strip.appendChild(d);return {d,t:null};}
       const srcK=(r.src?r.src[i]:r.k+i);
+      if(r.k==='chn'&&srcK==='chn9'){const t=el('div','ivmore fillon',{width:c.w+'px',height:c.h+'px'});t.appendChild(el('b',null,null,'All channels'));d.appendChild(t);strip.appendChild(d);return {d,t:null};}
       if(POSTER[srcK.replace(/\d+$/,'')]&&!(r.more&&i===r.n-1)){d.appendChild(posterCard(srcK,c.w,c.h));let t=null;if(r.titles){t=el('div','t',{top:(c.h+16)+'px',width:c.w+'px'});t.appendChild(el('span',null,null,r.titles[i]));d.appendChild(t);}strip.appendChild(d);return {d,t};}
       const im=el('img');im.src='c/'+srcK+'.jpg';im.width=c.w;im.height=c.h;
       /* channel logos are exported ~5 px off-centre (dark edge top/left): crop them in a clipped box so the tile is symmetric inside the focus ring */
@@ -744,7 +745,7 @@ function ArchPage(restore){
     let r=o.fr,c=o.fc[r]||0;
     if(k==='ArrowLeft'||k==='ArrowRight'){c+=k==='ArrowLeft'?-1:1;if(c<0){toMenu();return;}c=Math.min(AR[r].n-1,c);o.fc[r]=c;o.sx[r]=Math.max(0,Math.min(maxX(AR[r]),AR[r].cards[c].x));}
     else if(k==='ArrowUp'||k==='ArrowDown'){const nr=r+(k==='ArrowUp'?-1:1);if(nr<0||nr>=AR.length)return;o.fr=nr;if(o.fc[nr]==null)o.fc[nr]=0;}
-    else if(k==='Enter'){const kk=AR[r].k;if(kk==='cat')goTo(CatPage(c));else if(kk==='nov'||kk==='vyb'||kk==='prd')goTo(ContentPage(arKind(AR[r],c),c+1));else if(kk==='ivi'){goTo(c===AR[r].n-1?CatPage(0,null,IVI):ContentPage(arKind(AR[r],c),c+1));}else if(kk==='chn'){goTo(c===10?chanPage(false):CatPage(0,null,ARCH_CH[c]));}else if(kk==='pod'){goTo(CollectionsPage(c));}return;}
+    else if(k==='Enter'){const kk=AR[r].k;if(kk==='cat')goTo(CatPage(c));else if(kk==='nov'||kk==='vyb'||kk==='prd')goTo(ContentPage(arKind(AR[r],c),c+1));else if(kk==='ivi'){goTo(c===AR[r].n-1?CatPage(0,null,IVI):ContentPage(arKind(AR[r],c),c+1));}else if(kk==='chn'){goTo(c===10?chanPage(false):CatPage(0,null,ARCH_CH[c]));}else if(kk==='pod'){goTo(c===AR[r].n-1?CollectionsPage():CollectionPage(COLLS[c]));}return;}
     else if(k==='Escape'||k==='Backspace'){if(o.fr===0&&!(o.fc[0]>0)){toMenu();return;}o.fr=0;o.fc[0]=0;o.sx[0]=0;}
     o.layout(true);
   };
