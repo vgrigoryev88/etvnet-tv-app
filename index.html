@@ -2398,7 +2398,7 @@ function openQA(I){
   const r=ringRect();if(!r)return;
   /* название в окне — только если у карточки нет своей подписи (плитка канала); иначе подпись под карточкой остаётся яркой и бежит как обычно */
   const showT=I.level==='ch'&&!I.row,TH=showT?40+24:0;
-  const W=600,PAD=32,H=PAD+TH+80+16+80+PAD,GAP=24,pn=el('div','qa');pn.style.width=W+'px';pn.style.height=H+'px';
+  const NB=I.level==='ch'?3:2,W=600,PAD=32,H=PAD+TH+NB*80+(NB-1)*16+PAD,GAP=24,pn=el('div','qa');pn.style.width=W+'px';pn.style.height=H+'px';
   /* справа от карточки, если не помещается — слева; по вертикали по центру карточки */
   let x=r.x+r.w+12+GAP,side='r',y;if(x+W>1888){x=r.x-12-GAP-W;side='l';}
   if(x<32){/* широкая карточка (строка списка): окно под ней, а если не помещается — над ней */
@@ -2407,14 +2407,16 @@ function openQA(I){
   y=Math.round(Math.max(32,Math.min(1080-H-32,y)));pn.style.left=x+'px';pn.style.top=y+'px';
   pn.style.transformOrigin={r:'left center',l:'right center',b:'left top',t:'left bottom'}[side];
   let qt=null;if(showT){qt=el('div','qat t');qt.appendChild(el('span',null,null,I.title));pn.appendChild(qt);}
-  const play=Btn(pn,{icon:I.level==='ch'?'epg':'play',label:I.level==='ch'?'TV guide':I.started?'Continue watching':'Start watching',sub:qaSub(I),w:W-PAD*2});
-  const fav=Btn(pn,{icon:'fav',label:'Add to favourites',w:W-PAD*2});favSync(fav,FAVS[I.fk]);
+  /* канал: «Начать смотреть» добавлена после последнего раунда юзабилити-тестирования — канал можно сразу запустить из окна */
+  const watch=I.level==='ch'?Btn(pn,{icon:'play',label:'Start watching',w:W-PAD*2}):null;if(watch)watch.act='watch';
+  const play=Btn(pn,{icon:I.level==='ch'?'epg':'play',label:I.level==='ch'?'TV guide':I.started?'Continue watching':'Start watching',sub:qaSub(I),w:W-PAD*2});play.act=I.level==='ch'?'epg':'play';
+  const fav=Btn(pn,{icon:'fav',label:'Add to favourites',w:W-PAD*2});fav.act='fav';favSync(fav,FAVS[I.fk]);
   /* затемнение вокруг: вырез по рамке фокуса, карточка остаётся яркой */
   const tb=cardTitleBottom(r),hh=Math.max(r.h+24,tb?tb-r.y+12+12:0);
   const hole=el('div','qah',{left:(r.x-12)+'px',top:(r.y-12)+'px',width:(r.w+24)+'px',height:hh+'px',borderRadius:ring.style.borderRadius||'28px'});
   $('#stage').insertBefore(hole,$('#toast'));$('#stage').insertBefore(pn,$('#toast'));
   
-  QA={pn,hole,I,b:[play,fav],bi:0,PAD,TH};qaLayout(false);
+  const bs=watch?[watch,play,fav]:[play,fav];QA={pn,hole,I,b:bs,bi:watch?1:0,PAD,TH};qaLayout(false);
   if(qt){fadeOverflow(qt);startMarquee(qt);}
   [pn,hole].forEach(e=>{e.style.opacity=0;});pn.style.transform='scale(.96)';void pn.offsetWidth;
   hole.style.transition=T(['opacity'],M.fadeIn,'linear');hole.style.opacity=1;
@@ -2426,17 +2428,19 @@ function closeQA(after){if(!QA)return;const q=QA;QA=null;ring.style.borderColor=
   q.hole.style.transition=T(['opacity'],M.fadeOut,'linear');q.hole.style.opacity=0;
   setTimeout(()=>{q.pn.remove();q.hole.remove();},ms(M.fadeOut+20));if(after)after();else if(P&&P.layout)P.layout(true);}
 function qaKey(k){const q=QA;
-  if(k==='ArrowUp'||k==='ArrowDown'){q.bi=Math.max(0,Math.min(1,q.bi+(k==='ArrowDown'?1:-1)));qaLayout(true);return;}
+  if(k==='ArrowUp'||k==='ArrowDown'){q.bi=Math.max(0,Math.min(q.b.length-1,q.bi+(k==='ArrowDown'?1:-1)));qaLayout(true);return;}
   if(k==='Escape'||k==='Backspace'){closeQA();return;}
   if(k==='Enter'){const I=q.I;
-    if(q.bi===0){let inf;
+    const act=q.b[q.bi].act;
+    if(act==='watch'){closeQA(()=>goTo(PlayerPage('live',{ch:I.ch})));return;}
+    if(act!=='fav'){let inf;
       if(I.level==='ch'){closeQA(()=>goTo(EpgPage({name:I.title,img:I.img,ch:I.ch})));return;}
       if(I.level==='ep')inf=epInfo(I.kind,I.n,I.root,I.ep,I.ep.eps.indexOf(I.ep.it)+1);
       else if(I.level==='cont'){const e=I.started?3:1;inf=archInfo(I.kind,I.n,I.root,I.fk,I.started,e);inf.subBase=I.cont.name;inf.sub=I.cont.name+', '+(I.kind==='series'?'Episode ':'Episode ')+e;}
       else inf=archInfo(I.kind,I.n,I.root,I.fk,I.started);
       if(I.started&&I.level==='ep')inf.p=720;
       closeQA(()=>goTo(PlayerPage('arch',inf)));return;}
-    FAVS[I.fk]=!FAVS[I.fk];favSync(q.b[1],FAVS[I.fk]);toast(I.level==='ch'?(FAVS[I.fk]?'Channel added to favourites':'Channel removed from favourites'):(FAVS[I.fk]?'Added to favourites':'Removed from favourites'));setTimeout(()=>closeQA(),ms(260));}}
+    FAVS[I.fk]=!FAVS[I.fk];favSync(q.b[q.b.length-1],FAVS[I.fk]);toast(I.level==='ch'?(FAVS[I.fk]?'Channel added to favourites':'Channel removed from favourites'):(FAVS[I.fk]?'Added to favourites':'Removed from favourites'));setTimeout(()=>closeQA(),ms(260));}}
 /* перехват OK: на карточке ждём удержания, короткое нажатие срабатывает при отпускании */
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
