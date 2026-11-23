@@ -13,8 +13,11 @@
   .room{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;transition:transform 900ms cubic-bezier(.65,0,.25,1)}
   .room img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   /* the backlight recolours to the focused tile: hue-only blend over the room */
-  .glow{position:absolute;inset:0;background:rgb(215,25,45);mix-blend-mode:color;opacity:.85;transition:background-color 700ms linear;pointer-events:none;
-        -webkit-mask:radial-gradient(60% 75% at 50% 46%,#000 55%,rgba(0,0,0,.55) 100%);mask:radial-gradient(60% 75% at 50% 46%,#000 55%,rgba(0,0,0,.55) 100%)}
+  .glow{position:absolute;inset:0;background:rgb(215,25,45);mix-blend-mode:color;opacity:0;transition:background-color 700ms linear,opacity 700ms linear;pointer-events:none;
+        -webkit-mask:radial-gradient(46% 62% at 50% 46%,#000 40%,rgba(0,0,0,0) 100%);mask:radial-gradient(46% 62% at 50% 46%,#000 40%,rgba(0,0,0,0) 100%)}
+  .glow.tint{opacity:.75}
+  .screen::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45);transition:opacity 400ms linear;pointer-events:none}
+  .on .screen::after{opacity:0}
   .screen{position:absolute;left:24.26%;top:20.61%;width:51.49%;height:52.26%;background:#000;overflow:hidden;border-radius:2px}
   .screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none}
   .on .screen iframe{pointer-events:auto}
@@ -60,7 +63,7 @@
   document.getElementById('turnOn').addEventListener('click',()=>setOn(true));
   document.getElementById('back').addEventListener('click',()=>setOn(false));
   new ResizeObserver(place).observe(frame);
-  window.addEventListener('message',e=>{const d=e.data;if(d&&d.etv==='glow'&&typeof d.color==='string')glow.style.backgroundColor=d.color;});
+  window.addEventListener('message',e=>{const d=e.data;if(d&&d.etv==='glow'&&typeof d.color==='string'){glow.style.backgroundColor=d.color;const m=d.color.match(/\d+/g).map(Number);const isRed=m[0]>150&&m[1]<70&&m[2]<80;glow.classList.toggle('tint',!isRed);}});
 </script>
 </body>
 </html>
