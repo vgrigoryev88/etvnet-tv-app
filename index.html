@@ -322,6 +322,7 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 .lltm{margin-top:auto;font:500 24px/32px Inter,sans-serif;color:var(--mute)}.llbar{height:8px;border-radius:4px;background:#242020;margin:12px 0}.llbar u{display:block;height:8px;border-radius:4px;background:var(--txt)}
 .llrow.on .llbar u{background:#2FBF71}
 .lla{flex:none;width:64px;border-radius:8px;background:#242020;display:flex;align-items:center;justify-content:center;transition:background-color .2s linear}.llrow.on .lla{background:var(--red)}
+.lmask{position:absolute;top:144px;height:16px;background:var(--bg);visibility:hidden}
 .lstk{position:absolute;top:144px;height:80px;background:var(--bg);overflow:visible;will-change:transform}.lstk::after{content:"";position:absolute;left:0;right:0;top:80px;height:16px;background:linear-gradient(180deg,var(--bg),rgba(13,11,11,0))}
 /* ---- Программа передач (экран) ---- */
 .eplogo{position:absolute;left:48px;top:160px;height:96px;display:flex;align-items:center;gap:24px}.eplogo .plogo{position:relative;width:96px;height:96px}.eplogo>b{font:600 40px/48px Inter,sans-serif}
@@ -724,7 +725,7 @@ function LiveListPage(){
     e.querySelector('b').textContent=r.name;e.querySelector('.lld').textContent=r.prog;if(r.img==null)e.querySelector('.llp span').textContent=r.name;o.v.appendChild(e);return e;});
   o.track=el('div','sbar',{left:'1856px',top:'264px',height:'768px'});o.thumb=el('u');o.track.appendChild(o.thumb);o.root.appendChild(o.track);
   /* sticky section header: stays under the info bar while its section scrolls, the next one pushes it out */
-  o.stk=el('div','lstk',{left:(X-16)+'px',width:(W+32)+'px'});o.stk.innerHTML='<div class="llh" style="left:16px;top:16px;width:'+W+'px"><b></b><span></span></div>';o.root.appendChild(o.stk);
+  o.stk=el('div','lstk',{left:(X-16)+'px',width:(W+32)+'px'});o.stk.innerHTML='<div class="llh" style="left:16px;top:16px;width:'+W+'px"><b></b><span></span></div>';o.mask=el('div','lmask',{left:(X-16)+'px',width:(W+32)+'px'});o.root.appendChild(o.mask);o.root.appendChild(o.stk);
   mainHeader(o,X,'Live TV');
   const VIEW=1032-264;
   o.layout=function(animate=true){const d=animate?M.nav:0,inC=st.zone==='content',a=o.area,r=o.rows[o.ri],cur=a==='tabs'?o.tf:r.ci;
@@ -740,7 +741,7 @@ function LiveListPage(){
     let si=-1;o.heads.forEach((h,i)=>{if(h.y-sy<160)si=i;});const show=tabsUp&&si>=0&&o.heads[si].y-sy<160;
     if(show){const h=o.heads[si],nx=o.heads[si+1],push=nx?Math.min(0,nx.y-sy-(160+48+24)):0;o.stk.querySelector('b').textContent=h.cat;o.stk.querySelector('span').textContent=plCh(h.n);
       o.stk.style.transition=T(['transform'],d,M.move);o.stk.style.transform='translateY('+push+'px)';}
-    o.stk.style.visibility=show?'visible':'hidden';
+    o.stk.style.visibility=show?'visible':'hidden';o.mask.style.visibility=tabsUp?'visible':'hidden';
     /* scroll bar: under the tabs (264–1032) while they are visible, full height (160–1032) once they scrolled away */
     const bt=tabsUp?160:264,bh=1032-bt,th=bh*VIEW/(o.total-264);o.track.style.transition=T(['top','height'],d,M.move);o.track.style.top=bt+'px';o.track.style.height=bh+'px';
     o.thumb.style.height=th+'px';o.thumb.style.transition=T(['transform','height'],d,M.move);o.thumb.style.transform='translateY('+((bh-th)*sy/Math.max(1,o.total-1032))+'px)';
@@ -882,7 +883,7 @@ function LiveGridPage(big){
   o.trow=el('div','abs',{left:'16px',top:'20px'});tclip.appendChild(o.trow);
   let tx=0;o.tabs=LL_CATS.map(([t])=>{const w=chipW(t);const c=el('div','chip',{left:tx+'px',width:w+'px'},t);c.dataset.x=tx;c.dataset.w=w;tx+=w+16;o.trow.appendChild(c);return c;});
   o.tabsMax=Math.max(0,tx-16-GW);
-  o.stk=el('div','lstk',{left:(X-16)+'px',width:(GW+32)+'px'});o.stk.innerHTML='<div class="llh" style="left:16px;top:16px;width:'+GW+'px"><b></b><span></span></div>';o.root.appendChild(o.stk);
+  o.stk=el('div','lstk',{left:(X-16)+'px',width:(GW+32)+'px'});o.stk.innerHTML='<div class="llh" style="left:16px;top:16px;width:'+GW+'px"><b></b><span></span></div>';o.mask=el('div','lmask',{left:(X-16)+'px',width:(GW+32)+'px'});o.root.appendChild(o.mask);o.root.appendChild(o.stk);
   liveSide(o);mainHeader(o,X,'Live TV');
   const cur=()=>tiles[o.fr][o.fc[o.fr]||0];
   o.layout=function(animate=true){const d=animate?M.nav:0,inC=st.zone==='content',a=o.area,c=cur(),cc=a==='tabs'?o.tf:c.ci;
@@ -900,7 +901,7 @@ function LiveGridPage(big){
     // sticky category header once the tabs have scrolled away
     let si=-1;heads.forEach((h,i)=>{if(h.y-sy<=160)si=i;});const show=tabsUp&&si>=0&&heads[si].y-sy<=160;
     if(show){const h=heads[si],nx=heads[si+1],push=nx?Math.min(0,nx.y-sy-(160+48+24)):0;o.stk.querySelector('b').textContent=h.cat;o.stk.querySelector('span').textContent=plCh(h.n);o.stk.style.transition=T(['transform'],d,M.move);o.stk.style.transform='translateY('+push+'px)';}
-    o.stk.style.visibility=show?'visible':'hidden';
+    o.stk.style.visibility=show?'visible':'hidden';o.mask.style.visibility=tabsUp?'visible':'hidden';
     o.side(c.k,sy,d,animate,tabsUp?160:264);
     if(a==='grid'&&inC)placeRing(c.x-12,c.y-sy-12,c.w+24,c.h+24,28,d,true);else hideRing();};
   o.key=function(kk){const a=o.area;
