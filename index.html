@@ -1839,8 +1839,19 @@ const FILTERS_CH=[
  {key:'Genre',title:'Genre',opts:['All','Drama','Comedy','Detective','Melodrama','Action','Crime','War','Historical','Sci-fi'],sel:0,pen:true},
  {key:'Year',title:'Year',opts:['All','2015–2025','2010–2014','2000s','1990s','1980s','1970s','Before 1970'],sel:1,pen:true},
  {key:'',title:'Sort',opts:['Newest first','Oldest first','By rating','By popularity'],sel:0,sort:true}];
+/* genres shown as tabs inside an Archive category (Archive / <category>) */
+const CAT_GENRES={'Movies':GENRES.movies,'Series':GENRES.series,
+ 'Shows & TV Series':['All','Talk shows','Entertainment','Reality','Game shows','Comedy','Cooking','Travel','Lifestyle'],
+ 'News':['All','Politics','Economy','World','Society','Culture','Science','Sports news','Weather'],
+ 'Concerts & music videos':['All','Concerts','Music videos','Pop','Rock','Classical','Jazz','Chanson','Festivals'],
+ 'Sports':['All','Football','Hockey','Tennis','Boxing & MMA','Basketball','Motorsport','Figure skating','Biathlon'],
+ 'Documentary':['All','History','Nature','Science','Biography','Travel','Crime','War','Art'],
+ 'Kids':['All','Cartoons','Animated films','Fairy tales','Educational','Family','Kids shows'],
+ 'Karaoke':['All','Pop','Rock','Chanson','Retro','Duets','Kids songs','Movie songs']};
+const CAT_KIND={'Movies':'film','Series':'series'};
 function CatPage(catIdx,top,ch,opt={}){
-  const TABS=ch?CH_TABS:top?GENRES[top]:TABS_ARCH;const ti=(top||ch)?0:TABS.indexOf(CATS[catIdx]);const FILTERS=ch?FILTERS_CH:FILTERS_ARCH;
+  const catName=(!top&&!ch)?CATS[catIdx]:null;
+  const TABS=ch?CH_TABS:top?GENRES[top]:CAT_GENRES[catName];const ti=0;const FILTERS=ch?FILTERS_CH:FILTERS_ARCH;
   const strip=!!opt.strip,PAN=strip?[...FILTERS,{title:'Channel categories',opts:CH_CATS,sel:0}]:FILTERS;
   const o={name:strip?'chanC':'cat',top:top||(strip&&opt.menu?'chanC':null),ch:ch||null,strip,mode:'col',root:el('div','page'),area:strip?'strip':'grid',tab:ti>0?ti:0,tf:0,ff:0,gr:0,gc:0,sx:0,pf:0,panel:null,pi:0,fsel:PAN.map(f=>f.sel),gen:0,sf:1,ssx:0};
   o.tf=o.tab;
@@ -1891,11 +1902,11 @@ function CatPage(catIdx,top,ch,opt={}){
   o.side=el('div','side');o.root.appendChild(o.side);
   o.fill=function(){o.gwrap.innerHTML='';const tint=TINT[o.tab];o.cards=[];o.gen++;
     for(let i=0;i<ROWS*3;i++){const r=Math.floor(i/3),c=i%3;const d=el('div','card',{left:(c*536)+'px',top:(r*360)+'px'});
-      const kind=top?TOPP[top].kind:ch?(CH_KIND[o.tab]||KINDS[i%3]):(TAB_KIND[o.tab]||KINDS[i%3]),K=KIND[kind];
+      const kind=top?TOPP[top].kind:ch?(CH_KIND[o.tab]||KINDS[i%3]):(CAT_KIND[catName]||'show'),K=KIND[kind];
       d.appendChild(phCard({tint:TINT[(o.tab+i+(strip?o.ch.i:0))%TINT.length],meta:K.meta,clock:K.clock,isNew:i<2,prog:(i*37+o.gen*11)%3===0?20+((i*37)%60):null},512,288));
       const t=el('div','t',{top:'304px',width:'512px',opacity:1});t.appendChild(el('span',null,null,K.t+(i%4===2?' — very long, doesn’t fit on the card':'')+' · '+(i+1)));d.appendChild(t);
       o.gwrap.appendChild(d);o.cards.push({d,t,kind});}
-    if(!top&&!ch)o.crumb.querySelector('.sub').textContent=TABS[o.tab];};
+    if(!top&&!ch)o.crumb.querySelector('.sub').textContent=catName;};
   o.fill();o.drawFilters();
   o.page=()=>o.area==='pag'?o.pf:Math.floor(o.gr/2);
   o.layout=function(animate=true){
