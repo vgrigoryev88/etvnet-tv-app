@@ -33,7 +33,7 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 .asec{position:absolute;left:16px;top:0;transform-origin:0 0;will-change:transform}
 .asec .h{position:absolute;left:0;top:0;font:600 40px/48px Inter,sans-serif;color:var(--txt);white-space:nowrap}
 .asec .st{position:absolute;left:0;top:80px;will-change:transform}
-.pst{position:relative;overflow:hidden;border-radius:var(--r);background:#1b1818}
+.pst{position:relative;overflow:hidden;border-radius:16px;isolation:isolate;background:#1b1818}
 .pst::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,11,11,.35) 0%,rgba(13,11,11,0) 30%,rgba(13,11,11,0) 55%,rgba(13,11,11,.55) 100%);z-index:1;pointer-events:none}
 .pst i{font-style:normal;position:absolute;z-index:2;display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:22px;font:500 24px/44px Inter,sans-serif;color:var(--txt);white-space:nowrap}
 .pst i svg{width:26px;height:26px}
