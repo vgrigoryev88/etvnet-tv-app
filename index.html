@@ -33,6 +33,20 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 .asec{position:absolute;left:16px;top:0;transform-origin:0 0;will-change:transform}
 .asec .h{position:absolute;left:0;top:0;font:600 40px/48px Inter,sans-serif;color:var(--txt);white-space:nowrap}
 .asec .st{position:absolute;left:0;top:80px;will-change:transform}
+.pst{position:relative;overflow:hidden;border-radius:var(--r);background:#1b1818}
+.pst::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,11,11,.35) 0%,rgba(13,11,11,0) 30%,rgba(13,11,11,0) 55%,rgba(13,11,11,.55) 100%);z-index:1;pointer-events:none}
+.pst i{font-style:normal;position:absolute;z-index:2;display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:22px;font:500 24px/44px Inter,sans-serif;color:var(--txt);white-space:nowrap}
+.pst i svg{width:26px;height:26px}
+.pst .nw{left:16px;top:16px;background:var(--red)}
+.pst .rt{right:16px;top:16px;background:rgba(13,11,11,.8)}
+.pst .rt svg path{fill:#F7F5F5}
+.pst .mrow{position:absolute;z-index:2;left:16px;bottom:38px;display:flex;gap:8px}
+.pst .mrow i{position:static;background:rgba(13,11,11,.85)}
+.pst i.pb{left:16px;right:16px;bottom:16px;height:6px;padding:0;border-radius:3px;background:rgba(255,255,255,.18);display:block}
+.pst i.pb u{display:block;height:6px;border-radius:3px;background:var(--red)}
+.pst.coll::before{background:linear-gradient(180deg,rgba(13,11,11,0) 45%,rgba(13,11,11,.92) 100%)}
+.pst.coll b{position:absolute;z-index:2;left:24px;right:24px;bottom:24px;font:600 32px/40px Inter,sans-serif;color:var(--txt2)}
+.card.on .pst.coll b{color:var(--txt)}
 .card{position:absolute;top:0}
 .card img{position:static;display:block;border-radius:var(--r)}
 .card .t{position:absolute;left:0;overflow:hidden;white-space:nowrap;font:400 28px/32px Inter,sans-serif;color:var(--txt2);opacity:0}
@@ -662,13 +676,32 @@ const AR=[
  {k:'chn',title:'TV archive',w:184,h:184,n:11,r:16,src:['chn10','chn0','chn1','chn2','chn3','chn4','chn5','chn6','chn7','chn8','chn9']},
  {k:'prd',title:'Continue watching',w:464,h:254,n:5,r:16,titles:['No Room for Error','The Rublyovka Cop. New Year’s Mayhem','Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb','The Diamond Arm','Scream']}];
 AR.forEach(r=>{r.cards=Array.from({length:r.n},(_,i)=>({x:i*(r.w+24),w:(r.k==='chn'&&i===10)?176:r.w,h:(r.k==='chn'&&i===10)?176:r.h}));const last=r.cards[r.n-1];r.maxX=Math.max(0,last.x+last.w-1456);});
+/* Archive posters: clean artwork (one sprite exported from Figma) + live English badges */
+const POSTER_SPRITE='https://framerusercontent.com/images/DnppNELX80STXO2i6C0SY7JqGA.png';
+const POSTER={
+ nov:{y:0,w:464,h:254,items:[{nw:1,m:'4 seasons'},{nw:1,m:'12 episodes'},{nw:1,m:'128 min',ck:1},{nw:1,m:'4 seasons'},{nw:1,m:'4 seasons'}]},
+ vyb:{y:254,w:464,h:254,items:[{nw:1,m:'128 min',ck:1},{m:'88 min',ck:1},{m:'72 min',ck:1},{nw:1,m:'88 min',ck:1},{m:'98 min',ck:1}]},
+ prd:{y:508,w:464,h:254,items:[{m:'4 seasons',p:36},{m:'Season 4',m2:'Episode 2',p:58},{m:'128 min',ck:1,p:13},{m:'128 min',ck:1,p:52},{m:'128 min',ck:1,p:36}]},
+ pod:{y:762,w:344,h:482,coll:true}};
+function posterCard(key,w,h){const k=key.replace(/\d+$/,''),i=+key.match(/\d+$/)[0],P=POSTER[k];
+  const b=el('div','pst',{width:w+'px',height:h+'px'});
+  const im=el('img');im.src=POSTER_SPRITE;im.alt='';im.style.cssText='position:absolute;left:0;top:0;width:'+w+'px;height:'+h+'px;object-fit:none;object-position:'+(-i*P.w)+'px '+(-P.y)+'px;border-radius:0';b.appendChild(im);
+  if(P.coll){b.classList.add('coll');const t=el('b',null,null,COLLS[i]||'');b.appendChild(t);return b;}
+  const it=P.items[i]||{};let html='';
+  if(it.nw)html+='<i class="nw">New</i>';
+  html+='<i class="rt">'+STAR+'4.9</i>';
+  if(it.m)html+='<span class="mrow"><i>'+(it.ck?CLOCK:'')+it.m+'</i>'+(it.m2?'<i>'+it.m2+'</i>':'')+'</span>';
+  if(it.p!=null)html+='<i class="pb"><u style="width:'+it.p+'%"></u></i>';
+  b.insertAdjacentHTML('beforeend',html);return b;}
 function ArchPage(restore){
   const X=mainX(),o={name:'arch',mode:mainMode(),X,root:el('div','page'),secs:[],fr:0,fc:{},sx:{}};const maxX=r=>Math.max(0,r.maxX+1456-(1872-X));
   if(restore)Object.assign(o,{fr:restore.fr,fc:{...restore.fc},sx:{...restore.sx}});
   const clip=el('div','clip',{left:(X-16)+'px',width:(1920-X+16)+'px'});o.root.appendChild(clip);
   AR.forEach(r=>{const s=el('div','asec');const hh=el('div','h',null,r.title);if(r.logo){hh.classList.add('lg');hh.innerHTML='<img src="'+r.logo+'" alt="Ivi"><span></span>';hh.querySelector('span').textContent=r.title;}s.appendChild(hh);const strip=el('div','st');s.appendChild(strip);
     const cards=r.cards.map((c,i)=>{const d=el('div','card',{left:c.x+'px','--r':r.r+'px'});if(r.more&&i===r.n-1){const m=el('div','ivmore',{width:c.w+'px',height:c.h+'px'});m.innerHTML='<img src="'+r.logo+'" alt=""><b></b>';m.querySelector('b').textContent=r.more+'  →';d.appendChild(m);strip.appendChild(d);return {d,t:null};}if(r.catc){const cc=el('div','catc');cc.innerHTML='<img class="r" src="c/catcvr'+i+'.jpg" alt=""><img class="f" src="c/catcvf'+i+'.jpg" alt=""><b></b>';cc.querySelector('b').textContent=CAT_T[i];d.appendChild(cc);strip.appendChild(d);return {d,t:null};}
-      const im=el('img');im.src='c/'+(r.src?r.src[i]:r.k+i)+'.jpg';im.width=c.w;im.height=c.h;
+      const srcK=(r.src?r.src[i]:r.k+i);
+      if(POSTER[srcK.replace(/\d+$/,'')]&&!(r.more&&i===r.n-1)){d.appendChild(posterCard(srcK,c.w,c.h));let t=null;if(r.titles){t=el('div','t',{top:(c.h+16)+'px',width:c.w+'px'});t.appendChild(el('span',null,null,r.titles[i]));d.appendChild(t);}strip.appendChild(d);return {d,t};}
+      const im=el('img');im.src='c/'+srcK+'.jpg';im.width=c.w;im.height=c.h;
       /* channel logos are exported ~5 px off-centre (dark edge top/left): crop them in a clipped box so the tile is symmetric inside the focus ring */
       if(r.k==='chn'){const bx=el('div','chbox',{width:c.w+'px',height:c.h+'px'});bx.appendChild(im);d.appendChild(bx);}else d.appendChild(im);
       if(r.focus){const f=el('img','fimg',{left:r.fx+'px',top:r.fy+'px',borderRadius:'16px'});f.src='c/'+r.k+'F'+i+'.jpg';f.width=r.fw;f.height=r.fh;d.appendChild(f);}
