@@ -683,6 +683,8 @@ const POSTER={
  vyb:{y:254,w:464,h:254,items:[{nw:1,m:'128 min',ck:1},{m:'88 min',ck:1},{m:'72 min',ck:1},{nw:1,m:'88 min',ck:1},{m:'98 min',ck:1}]},
  prd:{y:508,w:464,h:254,items:[{m:'4 seasons',p:36},{m:'Season 4',m2:'Episode 2',p:58},{m:'128 min',ck:1,p:13},{m:'128 min',ck:1,p:52},{m:'128 min',ck:1,p:36}]},
  pod:{y:762,w:344,h:482,coll:true}};
+function posterKind(key){const k=key.replace(/\d+$/,''),i=+key.match(/\d+$/)[0],it=(POSTER[k]&&POSTER[k].items||[])[i];if(!it)return KINDS[i%3];return /min/.test(it.m)?'film':'series';}
+const arKind=(r,c)=>posterKind(r.src?r.src[c]:r.k+c);
 function posterCard(key,w,h){const k=key.replace(/\d+$/,''),i=+key.match(/\d+$/)[0],P=POSTER[k];
   const b=el('div','pst',{width:w+'px',height:h+'px'});
   const im=el('img');im.src=POSTER_SPRITE;im.alt='';im.style.cssText='position:absolute;left:0;top:0;width:'+w+'px;height:'+h+'px;object-fit:none;object-position:'+(-i*P.w)+'px '+(-P.y)+'px;border-radius:0';b.appendChild(im);
@@ -726,7 +728,7 @@ function ArchPage(restore){
     let r=o.fr,c=o.fc[r]||0;
     if(k==='ArrowLeft'||k==='ArrowRight'){c+=k==='ArrowLeft'?-1:1;if(c<0){toMenu();return;}c=Math.min(AR[r].n-1,c);o.fc[r]=c;o.sx[r]=Math.max(0,Math.min(maxX(AR[r]),AR[r].cards[c].x));}
     else if(k==='ArrowUp'||k==='ArrowDown'){const nr=r+(k==='ArrowUp'?-1:1);if(nr<0||nr>=AR.length)return;o.fr=nr;if(o.fc[nr]==null)o.fc[nr]=0;}
-    else if(k==='Enter'){const kk=AR[r].k;if(kk==='cat')goTo(CatPage(c));else if(kk==='nov'||kk==='vyb'||kk==='prd')goTo(ContentPage(KINDS[c%3],c+1));else if(kk==='ivi'){goTo(c===AR[r].n-1?CatPage(0,null,IVI):ContentPage(KINDS[c%3],c+1));}else if(kk==='chn'){goTo(c===10?chanPage(false):CatPage(0,null,ARCH_CH[c]));}else if(kk==='pod'){goTo(CollectionsPage(c));}return;}
+    else if(k==='Enter'){const kk=AR[r].k;if(kk==='cat')goTo(CatPage(c));else if(kk==='nov'||kk==='vyb'||kk==='prd')goTo(ContentPage(arKind(AR[r],c),c+1));else if(kk==='ivi'){goTo(c===AR[r].n-1?CatPage(0,null,IVI):ContentPage(arKind(AR[r],c),c+1));}else if(kk==='chn'){goTo(c===10?chanPage(false):CatPage(0,null,ARCH_CH[c]));}else if(kk==='pod'){goTo(CollectionsPage(c));}return;}
     else if(k==='Escape'||k==='Backspace'){if(o.fr===0&&!(o.fc[0]>0)){toMenu();return;}o.fr=0;o.fc[0]=0;o.sx[0]=0;}
     o.layout(true);
   };
@@ -2509,7 +2511,7 @@ document.addEventListener('keyup',e=>{
   lpFired=false;
 },true);
 /* где работает: архив (ряды), категории (сетка), страница контента (ряды), сезоны и выпуски (сетка) */
-{const A=ArchPage;ArchPage=function(...a){const o=A(...a);o.lp=()=>{const r=AR[o.fr],c=o.fc[o.fr]||0;if(!['nov','vyb','prd','ivi'].includes(r.k))return null;if(r.k==='ivi'&&c===r.n-1)return null;const kind=KINDS[c%3],n=c+1;return {kind,n,level:'top',root:'Archive',title:r.titles[c]||KIND[kind].t+' · '+n,started:r.k==='prd'||n%2===0,fk:kind+n};};return o;};}
+{const A=ArchPage;ArchPage=function(...a){const o=A(...a);o.lp=()=>{const r=AR[o.fr],c=o.fc[o.fr]||0;if(!['nov','vyb','prd','ivi'].includes(r.k))return null;if(r.k==='ivi'&&c===r.n-1)return null;const kind=arKind(r,c),n=c+1;return {kind,n,level:'top',root:'Archive',title:r.titles[c]||KIND[kind].t+' · '+n,started:r.k==='prd'||n%2===0,fk:kind+n};};return o;};}
 {const C=ContentPage;ContentPage=function(kind,n,root='Archive',ep=null,person=null){const o=C(kind,n,root,ep,person);o.lp=()=>{if(o.area!=='sec'||o.desc||o.rate)return null;const S=o.S[o.fr],c=o.fc[o.fr]||0,it=S.items[c];if(!it||S.person||it.all)return null;
   if(S.eps&&ep){const E={path:ep.path,it:ep.eps[c],eps:ep.eps};return {kind,n,root,level:'ep',ep:E,title:it.title,started:!!E.it.prog,fk:kind+n+'/'+pathStr(ep.path)+'/'+E.it.idx};}
   const k2=S.pk||KINDS[c%3],n2=n*10+c+1;return {kind:k2,n:n2,level:'top',root:S.pk?'People':root,title:it.title,started:!!it.prog,fk:k2+n2};};return o;};}
