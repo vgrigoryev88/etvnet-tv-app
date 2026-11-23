@@ -1736,7 +1736,6 @@ function ListPage(kind,n,level,path,root='Archive'){
   // info bar: primary, rating, [info fav rate] right-aligned group (612), divider, parent page
   const bar=el('div','abs',{left:'0',top:'0'});o.root.appendChild(bar);
   o.primary=Btn(bar,{icon:'play',label:'See all',sub:level?path[level-1].name:K.t+' · '+n,w:480});
-  o.rating=el('div','rtg',{left:'672px',top:'224px'});o.rating.innerHTML=STAR.replace(/24/g,'40')+'<span>4.9</span>';bar.appendChild(o.rating);
   o.icons=[Btn(bar,{icon:'info',label:'Full description',iconOnly:true,w:420}),Btn(bar,{icon:'fav',label:'Add to favourites',iconOnly:true,w:420}),Btn(bar,{icon:'rate',label:'Rate',iconOnly:true,w:420})];
   bar.appendChild(el('div','divv',{left:'1460px',top:'244px'}));
   o.parentBtn=Btn(bar,{icon:'parent',label:K.parent,w:385});
