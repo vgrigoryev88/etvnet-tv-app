@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>etvnet TV app — Component specification (excerpt)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D0B0B;--surf:#181515;--elev:#242020;--tonal:#302C2C;--line:#2c2828;--line2:#434141;--txt:#F7F5F5;--txt2:#C9C4C4;--mute:#918989;--red:#D7192D}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt2);font:400 16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.doc{max-width:860px;margin:0 auto;padding:72px 28px 120px}
+.kick{font:500 14px/1 Inter;color:var(--red);margin-bottom:16px}
+h1{font:600 44px/1.12 Inter;letter-spacing:-.02em;color:var(--txt);max-width:720px}
+.lead{font-size:18px;margin:18px 0 28px;max-width:720px}
+.toc{display:flex;gap:10px;flex-wrap:wrap}
+.toc a{color:var(--txt);text-decoration:none;font:500 14px/1 Inter;padding:10px 16px;border-radius:40px;background:var(--elev);border:1px solid var(--line2)}
+.toc a:hover,.toc a:focus-visible{background:var(--red);border-color:var(--red)}
+section{border-top:1px solid var(--line);margin-top:56px;padding-top:40px}
+h2{font:600 30px/1.2 Inter;color:var(--txt);letter-spacing:-.01em;margin-bottom:12px}
+h3{font:600 18px/1.3 Inter;color:var(--txt);margin:32px 0 10px}
+p{margin:10px 0;max-width:740px}
+ul{margin:10px 0 10px 20px}li{margin:6px 0}
+b{color:var(--txt);font-weight:600}
+code{font:400 13px 'JetBrains Mono',monospace;color:var(--txt)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+th{text-align:left;font:500 12.5px/1.3 Inter;color:var(--mute);padding:10px 12px;border-bottom:1px solid var(--line2)}
+td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{color:var(--txt)}
+.note{border-left:3px solid var(--red);background:var(--surf);padding:14px 18px;border-radius:0 12px 12px 0;margin-top:24px}
+.df{margin-top:64px;border-top:1px solid var(--line);padding-top:24px;color:var(--mute);font-size:14px}
+.df a{color:var(--txt)}
+a:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+@media (max-width:640px){h1{font-size:32px}.doc{padding:48px 18px 80px}table{font-size:13.5px}th,td{padding:9px 6px}}
+</style></head><body><article class="doc">
+<header class="dh">
+ <p class="kick">Excerpt from the component specification</p>
+ <h1>How components work and talk to each other</h1>
+ <p class="lead">The full specification covers every component of the etvnet TV app: its layout, states, motion and the rules it shares with other components. Two parts are shown here: the side menu, and long-press quick actions on cards. Sizes are for the 1920&nbsp;×&nbsp;1080 canvas.</p>
+ <nav class="toc"><a href="#menu">1. Side menu</a><a href="#qa">2. Long press · quick actions</a></nav>
+</header>
+
+<section id="menu">
+<h2>1. Side menu</h2>
+<p>A vertical panel on the left edge with the app's sections. It has two widths, and focus is either in the menu or in the page content. The menu and the page never hold focus at the same time: one hands it to the other.</p>
+
+<h3>Widths</h3>
+<table><thead><tr><th>View</th><th>Width</th><th>What is shown</th></tr></thead><tbody>
+<tr><td>Expanded</td><td>384</td><td>Full logo, icons and section names</td></tr>
+<tr><td>Collapsed (rail)</td><td>136</td><td>Compact logo and icons only</td></tr></tbody></table>
+
+<h3>Structure</h3>
+<ul>
+<li>Panel padding 48 on top, left and bottom. Logo 64 high at the top, first item 48 below it.</li>
+<li>Items are 64 high with a 16 gap (80 step). Search and Settings are pinned to the bottom, 48 from the edge, whatever the number of items above.</li>
+<li>Item: full pill 302 × 64 when expanded, 64 × 64 circle when collapsed. Icon 56, label Inter Medium 28/32.</li>
+</ul>
+
+<h3>Item states</h3>
+<table><thead><tr><th>State</th><th>When</th><th>Look</th></tr></thead><tbody>
+<tr><td>Rested</td><td>Any other item</td><td>No fill. In the collapsed rail the icon is at 50%.</td></tr>
+<tr><td>Selected</td><td>The current section</td><td>Tonal pill <code>#302C2C</code>, icon at 100%. Never dimmed.</td></tr>
+<tr><td>Focused</td><td>Focus is on this item</td><td>Red pill <code>#D7192D</code></td></tr></tbody></table>
+<p>When focus is in the menu but not on the current section, both pills are visible: red on the focused item, tonal on the current section. The two pills are separate layers that slide to their item, so they move rather than blink.</p>
+
+<h3>Which width each screen uses</h3>
+<table><thead><tr><th>Screen</th><th>Always open (default)</th><th>Always collapsed</th></tr></thead><tbody>
+<tr><td>Main: Live TV, Archive, Favourites, Watched</td><td>Expanded, content from x 416</td><td>Collapsed, content from x 168</td></tr>
+<tr><td>Inner: category, title page, TV Archive, People, Search, Collections</td><td colspan="2">Collapsed, content from x 168</td></tr>
+<tr><td>Full screen: player, channel TV guide, Settings</td><td colspan="2">Hidden (fades out in 200 ms)</td></tr></tbody></table>
+<p>The viewer picks the format in Settings → Navigation panel, where Movies, Series and TV Archive can also be hidden. Hidden items leave no gap and the arrows skip them.</p>
+
+<h3>How focus moves between the menu and the page</h3>
+<table><thead><tr><th>Situation</th><th>Result</th></tr></thead><tbody>
+<tr><td>Focus in content, Left from the left edge (first column, first chip, back chip)</td><td>Focus moves to the menu, on the current section. The menu opens.</td></tr>
+<tr><td>Back at the top level of a main screen</td><td>Same as above</td></tr>
+<tr><td>Focus in menu, Right or Back</td><td>Focus returns to the exact place it left in the content. The menu collapses if the screen uses the rail.</td></tr>
+<tr><td>Focus in menu, OK on another section</td><td>The section opens with a crossfade, focus goes to its content, the menu takes the new screen's width.</td></tr>
+<tr><td>Focus in menu, OK on the current section</td><td>Focus simply returns to the content.</td></tr></tbody></table>
+<ul>
+<li>From the rail the menu opens over the content; the content never shifts. Everything to the right of the panel dims to 70%.</li>
+<li>The content focus ring hides while the menu has focus, so only one red element is on screen.</li>
+<li>Up and Down do not wrap. Left does nothing in the menu.</li>
+</ul>
+
+<h3>Motion</h3>
+<table><thead><tr><th>What</th><th>Open (focus → menu)</th><th>Close (focus → content)</th></tr></thead><tbody>
+<tr><td>Duration, curve</td><td>280 ms, cubic-bezier(.2,.8,.2,1)</td><td>200 ms, cubic-bezier(.4,0,1,1)</td></tr>
+<tr><td>Panel</td><td>scaleX 136/384 → 1 from the left edge</td><td>Reverse</td></tr>
+<tr><td>Labels</td><td>Fade in and slide 16 px, staggered 18 ms per item</td><td>Fade out in 160 ms, no stagger</td></tr>
+<tr><td>Pills</td><td>Width 64 → 302</td><td>302 → 64</td></tr>
+<tr><td>Content dim</td><td>0 → 70%</td><td>70% → 0</td></tr></tbody></table>
+<p>Only transform, opacity and the pill width animate, to stay smooth on low-end Tizen and webOS TVs. Moving between items, the red pill slides in 200 ms. Remote input is ignored during the page crossfade.</p>
+</section>
+
+<section id="qa">
+<h2>2. Long press · quick actions</h2>
+<p>Starts a title or adds it to favourites straight from its card, without opening the title page. On live channels it starts the channel, opens its TV guide or adds it to favourites. It is an accelerator: every action is also available the regular way, so there is no on-screen hint.</p>
+
+<h3>Input</h3>
+<table><thead><tr><th>Remote</th><th>Result</th></tr></thead><tbody>
+<tr><td>Short OK on a card</td><td>As before: opens the title page or starts the channel. Fires on release.</td></tr>
+<tr><td>Hold OK for 600 ms or more</td><td>Opens the quick actions. Key auto-repeat is ignored, so it opens once.</td></tr>
+<tr><td>Up / Down</td><td>Move between buttons</td></tr>
+<tr><td>OK</td><td>Run the button's action. A held OK is ignored; only a new press counts.</td></tr>
+<tr><td>Back</td><td>Close with no action. Focus stays on the card.</td></tr></tbody></table>
+
+<h3>Where it works and where it does not</h3>
+<ul>
+<li><b>Content cards</b> on Archive rows, Movies, Series, categories, channel archive, title pages, search results, Favourites, Watched, collection and person pages.</li>
+<li><b>Live channels</b> in the Live TV grid and list.</li>
+<li><b>Not on links:</b> TV Archive channel tiles, category tiles, collections, people and See-all cards. A hold there acts as a normal OK.</li>
+</ul>
+
+<h3>What the window offers</h3>
+<table><thead><tr><th>Card</th><th>Buttons</th></tr></thead><tbody>
+<tr><td>Title</td><td>Start watching or Continue watching, then Add to / Remove from favourites</td></tr>
+<tr><td>Live channel</td><td>Start watching, TV guide (focused on open), Add to / Remove from favourites</td></tr></tbody></table>
+<p>The play button works at the level of the card it was opened on, using the same logic as the title page button:</p>
+<table><thead><tr><th>Card level</th><th>Not started</th><th>Started</th></tr></thead><tbody>
+<tr><td>Movie</td><td>Movie · 128 min</td><td>45 min left</td></tr>
+<tr><td>Series</td><td>Season 1 · Episode 1</td><td>Season 1 · Episode 4 · 20 min left</td></tr>
+<tr><td>Show</td><td>Latest episode</td><td>Where the viewer stopped in the whole show</td></tr>
+<tr><td>Season or cycle</td><td>First episode of that season</td><td>Continues inside that season only</td></tr>
+<tr><td>Episode</td><td>Episode meta</td><td>12 min left</td></tr></tbody></table>
+<p>OK on the play button closes the window and opens the player directly; the title page is skipped.</p>
+
+<h3>How it talks to other components</h3>
+<ul>
+<li><b>Card:</b> keeps its normal focused state, ring and bright title underneath. No extra outline.</li>
+<li><b>Title:</b> not repeated in the window when the card has its own caption. Only a channel tile in the Live TV grid, which has no caption, gets the channel name as the window title.</li>
+<li><b>Favourites button:</b> the same state as on the title page. Toggling it switches the label and icon, shows a toast, and closes the window after about 260 ms.</li>
+<li><b>Toast:</b> Added to favourites / Removed from favourites; for channels, Channel added to favourites / Channel removed from favourites.</li>
+<li><b>Focus colour:</b> red means focus. While the window is open, only the card focus and the focused button are red.</li>
+</ul>
+
+<h3>Position and look</h3>
+<ul>
+<li>To the right of the card, 24 from the focus ring. If it does not fit before the right margin, it goes to the left. Vertically centred on the card itself (its caption is not counted), kept 32 inside the screen.</li>
+<li>Wide cards (Live TV list rows) get the window below the row, or above it near the bottom of the screen.</li>
+<li>Window 600 wide, surface background, hairline border, radius 24, padding 32, buttons 16 apart. The rest of the screen, including the menu, dims to 60%.</li>
+<li>Opens in 200 ms (fade and scale 0.96 → 1 from the side facing the card), closes in 120 ms.</li>
+</ul>
+<p class="note">Changed after the last usability test round (Nov 2026): the channel window first had only TV guide and Favourites. Viewers sometimes held OK by accident or simply wanted to watch, so Start watching was added to the channel window.</p>
+</section>
+<footer class="df">The remaining parts of the specification (Live TV, player, TV guide, title pages, search, settings and others) are not published. <a href="./">Open the design system</a> · <a href="../">Open the prototype</a></footer>
+</article>
+</body></html>
