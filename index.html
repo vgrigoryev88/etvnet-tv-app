@@ -184,9 +184,9 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 .dpanel{position:absolute;left:520px;top:44px;width:880px;height:992px;box-sizing:border-box;border-radius:24px;background:#181515;border:2px solid #434141;padding:24px;display:flex;flex-direction:column;gap:24px;will-change:opacity,transform}
 .dhead{display:flex;flex-direction:column;gap:24px}.dts{display:flex;flex-direction:column;gap:8px}
 .dt{font:600 40px/48px Inter,sans-serif;color:var(--txt)}.ds{font:400 32px/40px Inter,sans-serif;color:var(--mute)}
-.dmeta{display:flex;flex-direction:column;gap:8px;font:500 28px/32px Inter,sans-serif;color:var(--mute)}
-.dmain{display:flex;align-items:center;gap:16px;height:40px}.dmain .r{display:flex;align-items:center;gap:16px;color:#F7F5F5}.dmain b,.drow b{font-weight:500}.dmain i{font-style:normal}
-.drow{display:flex;gap:16px}.drow span{width:120px;flex:none}.drow b{color:var(--txt2)}
+.dmeta{display:grid;grid-template-columns:auto 1fr;column-gap:24px;row-gap:8px;font:500 28px/36px Inter,sans-serif;color:var(--mute)}
+.dmain{display:flex;align-items:center;gap:16px;height:40px;font:500 28px/32px Inter,sans-serif;color:var(--mute)}.dmain .ds{font:inherit;color:inherit}.dmain .r{display:flex;align-items:center;gap:16px;color:#F7F5F5}.dmain b,.drow b{font-weight:500}.dmain i{font-style:normal}
+.drow{display:contents}.drow b{color:var(--txt2)}
 .dbody{position:relative;flex:1;overflow:hidden}
 .dbody .dtext{font:400 28px/40px Inter,sans-serif;color:var(--txt);white-space:pre-line;will-change:transform}
 .dbody.scroll .dtext{padding-right:40px}
@@ -1096,8 +1096,9 @@ const STAR40='<svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l3 6
 function openDesc(o,info){
   stopMarquee();hideRing();
   const ov=el('div','dov'),pn=el('div','dpanel');
-  pn.innerHTML='<div class="dhead"><div class="dts"><div class="dt"></div>'+(info.sub?'<div class="ds"></div>':'')+'</div>'+
-    '<div class="dmeta"><div class="dmain"><span class="r">'+STAR40+'<b>4.9</b></span><i>|</i><span>2006</span></div>'+
+  pn.innerHTML='<div class="dhead"><div class="dts"><div class="dt"></div>'+
+    '<div class="dmain"><span class="r">'+STAR40+'<b>4.9</b></span><i>|</i><span>2006</span>'+(info.sub?'<i>|</i><span class="ds"></span>':'')+'</div></div>'+
+    '<div class="dmeta">'+
     '<div class="drow"><span>Country</span><b>Country of production</b></div><div class="drow"><span>Genre</span><b>Genre, genre</b></div></div></div>'+
     '<div class="dbody"><div class="dtext"></div><div class="dbar"><u></u></div></div><div class="dfoot"><div class="dcta">Close</div></div>';
   pn.querySelector('.dt').textContent=info.title;if(info.sub)pn.querySelector('.ds').textContent=info.sub;pn.querySelector('.dtext').textContent=FULL_DESC;
