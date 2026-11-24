@@ -500,7 +500,7 @@ body.full #full{opacity:0;transition:opacity .2s}body.full #full:hover,body.full
 .smode .chip{display:flex;align-items:center;justify-content:center;gap:12px}.smode .mcnt{font-style:normal;font:500 24px/32px Inter,sans-serif;padding:0 10px;border-radius:16px;background:rgba(247,245,245,.12)}.smode .mcnt:empty{display:none}
 .mchip{display:flex;align-items:center;gap:12px;height:64px;padding:0 20px 0 22px;width:auto!important;z-index:2}.mchip .dd{margin-left:-2px;opacity:.8}.mchip{padding:0 32px}
 .srch .snote{margin-left:auto;padding-left:24px;color:var(--mute);font:400 28px/40px Inter,sans-serif;flex:none}
-.smode.in{background:none;z-index:2}.sdiv{position:absolute;width:2px;height:48px;background:#343030;z-index:2}
+.smode.in{background:none;z-index:2}.srdiv{position:absolute;width:2px;height:48px;background:#343030;z-index:2}
 
 /* ===== showcase layout ===== */
 html,body{background:#000}
@@ -1260,7 +1260,7 @@ function SearchPage(opt={}){
   /* the switch: A — over the keyboard (568), B — over the results (824…1872); two equal halves. After a query each half shows how many it found */
   o.bar=el('div','srch',{left:'168px',top:'160px',width:'1704px'});
   if(MS&&L1){o.mChip=el('div','chip mchip',{left:'176px',top:'168px'});o.root.appendChild(o.mChip);}
-  if(MS&&!L1){const hw=268;o.mEl=el('div','smode in',{left:'168px',top:'160px',width:'568px'});o.mChips=['Content','People'].map((t,i)=>{const c=el('div','chip',{left:(8+i*(hw+16))+'px',top:'8px',width:hw+'px'});c.innerHTML='<span></span><i class="mcnt"></i>';c.querySelector('span').textContent=t;return c;});o.mChips.forEach(c=>o.mEl.appendChild(c));o.root.appendChild(o.mEl);o.root.appendChild(el('div','sdiv',{left:'760px',top:'176px'}));}
+  if(MS&&!L1){const hw=268;o.mEl=el('div','smode in',{left:'168px',top:'160px',width:'568px'});o.mChips=['Content','People'].map((t,i)=>{const c=el('div','chip',{left:(8+i*(hw+16))+'px',top:'8px',width:hw+'px'});c.innerHTML='<span></span><i class="mcnt"></i>';c.querySelector('span').textContent=t;return c;});o.mChips.forEach(c=>o.mEl.appendChild(c));o.root.appendChild(o.mEl);o.root.appendChild(el('div','srdiv',{left:'760px',top:'176px'}));}
   o.bnote=el('div','snote');o.bar.innerHTML=IC_S+'<span class="sq"></span><i class="caret"></i><span class="sph"></span>';o.bar.style.justifyContent='flex-start';o.bar.appendChild(o.bnote);o.root.appendChild(o.bar);
   o.isP=()=>o.sm==='p';
   o.scope=function(force){const p=o.isP();if(o.scP===p&&!force)return;o.scP=p;if(o.mChip){o.mChip.innerHTML=chipHTML(p);o.padL();}o.bar.querySelector('.sph').textContent=p?'Surname or name of an actor, director or presenter':'Title of a movie, series or show';};
