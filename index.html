@@ -462,6 +462,8 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 .chpass.wide .ptitle .pnm,.chpass.wide .ptitle .pty{position:static;width:auto}
 .chpass.wide .pup{bottom:140px}
 .chpass.wide .ptitle .pnm{-webkit-line-clamp:3}
+.chpass.wide .pds{font:400 32px/40px Inter,sans-serif;color:var(--txt);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.chpass.wide .pty{bottom:192px;right:auto;width:720px}
 .catc{position:absolute;left:0;top:0;width:552px;height:176px;border-radius:16px;background:#181515;overflow:hidden;transition:background-color .2s linear}
 .catc::after{content:'';position:absolute;inset:0;border-radius:16px;box-shadow:inset 0 0 0 2px #434141;pointer-events:none}
 .catc b{position:absolute;left:24px;top:24px;font:600 32px/40px Inter,sans-serif;color:var(--txt);white-space:pre-line}
@@ -1805,6 +1807,16 @@ const IVI={name:'Ivi',img:10,cats:[2],i:900},NNK={name:'Nashe Novoe Kino',img:11
 function chanPage(menu){return CHAN_VER==='C'?CatPage(0,null,CHANNELS[0],{strip:true,menu}):ChannelsPage(menu);}
 /* цвет паспорта считается из плитки канала (brand.py): 1) средний цвет фона плитки по кольцу у края; если он насыщенный (S ≥ 25 %) — берём его; 2) если фон нейтральный (чёрный, серый, серебристый, белый) — берём доминирующий насыщенный цвет логотипа (≥ 3 % площади); 3) если и в логотипе нет цвета — нейтральный графит с оттенком фона; 4) светлота ограничивается 18–40 %, чтобы белый текст читался */
 const CH_BRAND={0:'#02215a',1:'#188150',2:'#bc4a10',3:'#82180f',4:'#028bca',5:'#4c4d4c',6:'#c50121',7:'#bc10b8',8:'#835a49',9:'#524947',10:'#c3093a',11:'#4c4c4c'};
+const CH_DESC={1:['News, favourite movies and series, bright shows and big events. Everything worth watching, on one channel.','The country’s main channel: evening news, prime-time drama and the shows the whole family talks about the next morning.'],
+2:['Comedy series, talk shows and Saturday night entertainment.','Light shows for the evening: sitcoms, stand-up, game shows and reality formats with the hosts you already know.','New Russian series every week, plus the full archive of the channel’s hits.'],
+3:['News every hour, live reports and interviews with the people behind the headlines.','Round-the-clock news, analysis and documentaries. Breaking stories as they happen, and the context to understand them.'],
+4:['Russian films from the last thirty years, from comedies to war drama.','A new premiere every evening. Classic Soviet cinema at weekends, and festival favourites late at night.'],
+5:['Science, history and travel documentaries for curious minds.','Documentaries about nature, space and great inventions. Lectures and educational series for viewers of every age.'],
+6:['Music videos, concerts and the charts.','Live concerts, the biggest hits of the season and interviews with the artists behind them.'],
+7:['Cartoons and children’s series from morning till evening.','Animated series, fairy tales and educational shows for kids. Safe content picked for children under twelve.'],
+8:['Regional news, local stories and national culture.','Life across the country: regional news, folk music, cooking shows and documentaries about the people who live there.'],
+9:['War films, military history and documentary series.','Films and series about the war, documentaries about the great battles and the people who fought them.']};
+function chDesc(c){const k=(c.cats||[])[0],a=CH_DESC[k]||CH_DESC[2],h=[...(c.name||'')].reduce((s,ch)=>s+ch.charCodeAt(0),c.i||0);return a[h%a.length];}
 function chTypes(c){const t=(c.cats||[]).map(i=>CH_CATS[i]).filter(Boolean);return t.length?t.join(' · '):'Shows · Series';}
 /* “Паспорт канала”: слева компактный список “логотип + название” (единственная зона фокуса), справа плашка выбранного канала без интерактивных элементов */
 function ChannelsPage(top){
@@ -1834,8 +1846,8 @@ function ChannelsPage(top){
       d.querySelector('b').textContent=c.name;o.lwrap.appendChild(d);return d;});};
   o.fillPass=function(){const c=o.list[o.sel]||o.list[0];const col=CH_BRAND[c.img]||'#3a3434';
     o.pass.style.setProperty('--brand',col);
-    o.pass.innerHTML='<div class="pbg"></div>'+(IC?'':'<div class="plg">'+(c.img!=null?'<img src="c/chn'+c.img+'.jpg">':'<span>TV</span>')+'</div>')+(IC?'<div class="ptitle"><div class="pnm"></div><div class="pty"></div></div>':'<div class="pnm"></div><div class="pty"></div>')+'<div class="pup">Updated today</div><div class="phint"><span class="rkey">OK</span>Open the channel’s archive</div>';
-    o.pass.querySelector('.pnm').textContent=c.name;o.pass.querySelector('.pty').textContent=chTypes(c);
+    o.pass.innerHTML='<div class="pbg"></div>'+(IC?'':'<div class="plg">'+(c.img!=null?'<img src="c/chn'+c.img+'.jpg">':'<span>TV</span>')+'</div>')+(IC?'<div class="ptitle"><div class="pnm"></div><div class="pds"></div></div><div class="pty"></div>':'<div class="pnm"></div><div class="pty"></div>')+'<div class="pup">Updated today</div><div class="phint"><span class="rkey">OK</span>Open the channel’s archive</div>';
+    o.pass.querySelector('.pnm').textContent=c.name;o.pass.querySelector('.pty').textContent=chTypes(c);const pd=o.pass.querySelector('.pds');if(pd)pd.textContent=chDesc(c);
     if(IC){const s=(c.img!=null?c.img:c.i)*5%6,ids=[s,(s+1)%6,(s+3)%6];const pv=el('div','pprev vA');
       pv.innerHTML=ids.map((n,k)=>'<img class="pc pc'+k+'" src="c/lst'+n+'.jpg" alt="">').join('');o.pass.insertBefore(pv,o.pass.children[1]);o.pass.classList.add('hp');}else o.pass.classList.remove('hp');};
   o.fillList();o.fillPass();
