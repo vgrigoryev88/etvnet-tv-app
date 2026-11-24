@@ -2124,7 +2124,7 @@ function PlayerPage(kind,info){
     o.top.querySelector('.pttl b').textContent=live?c.name:info.title;o.top.querySelector('.pttl span').textContent=live?o.prog.name:info.sub||'';};o.paintTop();
   // bottom panel
   o.bp=el('div','pbp');o.root.appendChild(o.bp);
-  const Y=live?{t:728,bar:792,btn:832,lbl:920}:{t:768,bar:832,btn:872,lbl:960};
+  const Y=live?{t:680,bar:744,btn:784,lbl:872}:{t:768,bar:832,btn:872,lbl:960};
   o.ctl=el('div','abs',{left:'0',top:'0',width:'1920px',height:'1080px'});o.bp.appendChild(o.ctl);
   o.time=el('div','ptime',{top:Y.t+'px'});o.ctl.appendChild(o.time);
   o.track=el('div','ptrack',{top:Y.bar+'px'});o.fill=el('i');o.knob=el('u');o.track.appendChild(o.fill);o.track.appendChild(o.knob);o.bp.appendChild(o.track);
