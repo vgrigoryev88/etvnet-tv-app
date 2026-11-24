@@ -1,0 +1,2921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>etvnet TV app — Design system</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D0B0B;--surf:#181515;--elev:#242020;--tonal:#302C2C;--line:#2c2828;--line2:#434141;--txt:#F7F5F5;--txt2:#C9C4C4;--mute:#918989;--red:#D7192D;--air:#2FBF71}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{background:var(--bg);color:var(--txt);font:400 15px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+code{font:400 12.5px/1.5 'JetBrains Mono',ui-monospace,monospace}
+.app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:28px 16px 40px;background:#0a0808}
+.brand{padding:0 12px 24px}
+.brand b{display:block;font:600 18px/24px Inter;letter-spacing:-.01em}
+.brand span{color:var(--mute);font-size:13px}
+.brand a{display:inline-flex;margin-top:14px;font:500 13px/1 Inter;padding:9px 14px;border-radius:40px;background:var(--elev);border:1px solid var(--line2)}
+.brand a:hover,.brand a:focus-visible{background:var(--red);border-color:var(--red)}
+nav>ul{list-style:none}
+nav>ul>li>a{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:40px;font:500 14px/20px Inter;color:var(--txt2)}
+nav>ul>li>a small{font:500 11px/1 Inter;color:var(--mute);background:var(--surf);padding:4px 7px;border-radius:20px}
+nav>ul>li>a:hover{color:var(--txt);background:var(--surf)}
+nav>ul>li.cur>a{background:var(--tonal);color:var(--txt)}
+nav ul ul{list-style:none;display:none;padding:4px 0 10px 12px}
+nav li.cur ul{display:block}
+nav ul ul a{display:block;padding:5px 12px;font-size:13px;color:var(--mute);border-left:2px solid var(--line)}
+nav ul ul a:hover,nav ul ul a.on{color:var(--txt);border-left-color:var(--red)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+main{padding:48px 56px 120px;max-width:1440px;min-width:0}
+.pg{display:none}.pg.cur{display:block}
+.pg>h2{font:600 44px/52px Inter;letter-spacing:-.02em}
+.lead{color:var(--txt2);font-size:17px;max-width:720px;margin:10px 0 40px}
+.comp{border-top:1px solid var(--line);padding:36px 0 44px}
+.comp>header{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.comp h3{font:600 24px/32px Inter;letter-spacing:-.01em}
+.fig{font:500 12px/1 Inter;color:var(--mute);border:1px solid var(--line2);padding:5px 9px;border-radius:20px}
+.desc{color:var(--txt2);max-width:760px;margin:10px 0 24px}
+.desc code{color:var(--txt2);word-break:break-word}
+.states{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
+.st.wide{grid-column:1/-1}
+.shot{background:#050404;border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;align-items:center;justify-content:center;min-height:140px}
+.st.wide .shot{padding:12px}
+.shot img{display:block;max-width:100%;height:auto;border-radius:4px}
+.st:not(.wide) .shot img{max-height:420px;width:auto}
+figcaption{padding:12px 2px 0;display:flex;flex-direction:column;gap:2px}
+figcaption b{font:600 14px/20px Inter}
+figcaption b::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:1px}
+figcaption span{color:var(--mute);font-size:13.5px}
+details.cd{margin-top:24px}
+details.cd summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font:500 13px/1 Inter;padding:9px 14px;border-radius:40px;border:1px solid var(--line2);color:var(--txt2)}
+details.cd summary::before{content:'</>';font:500 12px/1 'JetBrains Mono',monospace;color:var(--mute)}
+details.cd[open] summary,details.cd summary:hover{color:var(--txt);background:var(--elev)}
+.code{margin-top:12px;border:1px solid var(--line);border-radius:12px;background:#080606;overflow:hidden}
+.tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--line)}
+.tabs button{font:500 12.5px/1 Inter;color:var(--mute);background:none;border:0;padding:8px 12px;border-radius:20px;cursor:pointer}
+.tabs button.on{background:var(--tonal);color:var(--txt)}
+.tabs .cp{margin-left:auto}
+.tabs .cp:hover{color:var(--txt)}
+pre{padding:16px 20px;overflow:auto;max-height:460px;color:#d9d3d3}
+.swg{margin-bottom:24px}.swg h4{font:600 13px/1 Inter;color:var(--mute);margin-bottom:12px}
+.sws{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.sw{background:var(--surf);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.sw i{height:64px;border-radius:8px;margin-bottom:8px;border:1px solid var(--line2)}
+.sw b{font:500 13px/18px Inter}.sw code{color:var(--txt2)}.sw span{color:var(--mute);font-size:12.5px}
+.tys{display:flex;flex-direction:column}
+.ty{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+.tn{display:flex;flex-direction:column;font:500 14px/20px Inter}.tn code{color:var(--mute)}
+.tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ras{display:flex;gap:28px;flex-wrap:wrap}
+.ra{display:flex;flex-direction:column;gap:4px;font-size:13px}.ra i{width:120px;height:80px;background:var(--elev);border:2px solid var(--line2);margin-bottom:6px}.ra code{color:var(--mute)}
+.mt{border-collapse:collapse;width:100%;max-width:960px;font-size:14px}
+.mt th{text-align:left;font:500 12px/1 Inter;color:var(--mute);padding:10px 12px;border-bottom:1px solid var(--line2)}
+.mt td{padding:12px;border-bottom:1px solid var(--line);color:var(--txt2)}.mt td:first-child{color:var(--txt)}
+.menu-btn{display:none}
+@media (max-width:900px){
+ .app{grid-template-columns:1fr}
+ aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+ nav ul ul{display:none!important}
+ nav>ul{display:flex;flex-wrap:wrap;gap:6px}
+ main{padding:32px 18px 80px}
+ .states{grid-template-columns:1fr}
+ .ty{grid-template-columns:1fr;gap:4px}
+ .pg>h2{font-size:34px;line-height:40px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+ <div class="brand"><b>etvnet TV app</b><span>Design system · 62 states captured from the prototype</span><br><a href="../">Open the prototype</a></div>
+ <nav><ul><li><a href="#foundations" data-page="foundations">Foundations</a><ul><li><a href="#foundations-color">Colour</a></li><li><a href="#foundations-type">Typography</a></li><li><a href="#foundations-shape">Shape</a></li><li><a href="#foundations-focus">Focus</a></li><li><a href="#foundations-motion">Motion</a></li></ul></li><li><a href="#navigation" data-page="navigation">Navigation<small>11</small></a><ul><li><a href="#navigation-menu">Menu</a></li><li><a href="#navigation-header">Header · breadcrumb and clock</a></li><li><a href="#navigation-chips">Category chips</a></li><li><a href="#navigation-pager">Page indicator</a></li></ul></li><li><a href="#cards" data-page="cards">Cards and tiles<small>9</small></a><ul><li><a href="#cards-catc">Category card</a></li><li><a href="#cards-poster">Poster card</a></li><li><a href="#cards-coll">Collection card</a></li><li><a href="#cards-more">See-all card</a></li><li><a href="#cards-chn">Channel tile</a></li><li><a href="#cards-person">Person card</a></li></ul></li><li><a href="#live" data-page="live">Live TV<small>4</small></a><ul><li><a href="#live-ltile">Live channel tile</a></li><li><a href="#live-cip">Channel panel</a></li><li><a href="#live-llh">Group header</a></li><li><a href="#live-livelist">List view</a></li></ul></li><li><a href="#player" data-page="player">Player<small>7</small></a><ul><li><a href="#player-ptop">Player header</a></li><li><a href="#player-pbot">Player controls</a></li><li><a href="#player-pseek">Seek preview</a></li><li><a href="#player-pchn">Channel strip</a></li><li><a href="#player-epg">TV guide</a></li></ul></li><li><a href="#title" data-page="title">Title page<small>12</small></a><ul><li><a href="#title-hero">Title header</a></li><li><a href="#title-mbtn">Action buttons</a></li><li><a href="#title-csrc">Source card</a></li><li><a href="#title-desc">Description dialog</a></li><li><a href="#title-rate">Rating dialog</a></li><li><a href="#title-qa">Quick actions</a></li></ul></li><li><a href="#settings" data-page="settings">Settings<small>7</small></a><ul><li><a href="#settings-smenu">Settings list</a></li><li><a href="#settings-spanel">Settings panels</a></li></ul></li><li><a href="#feedback" data-page="feedback">Feedback<small>6</small></a><ul><li><a href="#feedback-toast">Toast</a></li><li><a href="#feedback-empty">Empty state</a></li><li><a href="#feedback-load">Search states</a></li></ul></li><li><a href="#screens" data-page="screens">Screens<small>6</small></a><ul><li><a href="#screens-scr">Main screens</a></li></ul></li></ul></nav>
+</aside>
+<main><article class="pg" id="foundations" data-page="foundations"><h2>Foundations</h2><p class="lead">Tokens the prototype is built on. Every value below is read from the prototype CSS, not redrawn.</p><section class="comp" id="foundations-color"><header><h3>Colour</h3><span class="fig">Figma · Variables / Color</span></header>
+<p class="desc">Dark theme only. The page is never pure black, and red is the only action colour: it marks focus, never decoration. Prototype root variables: <code>:root{--bg:#0D0B0B;--tonal:#302C2C;--txt:#F7F5F5;--txt2:#C9C4C4;--mute:#918989;--red:#D7192D}</code></p><div class="swg"><h4>Background</h4><div class="sws"><div class="sw"><i style="background:#0D0B0B"></i><b>bg-base</b><code>#0D0B0B</code><span>Page</span></div><div class="sw"><i style="background:#181515"></i><b>bg-surface</b><code>#181515</code><span>Cards, panels</span></div><div class="sw"><i style="background:#242020"></i><b>bg-elevated</b><code>#242020</code><span>Buttons at rest</span></div><div class="sw"><i style="background:#302C2C"></i><b>bg-focused</b><code>#302C2C</code><span>Tonal, selected pill</span></div><div class="sw"><i style="background:#434141"></i><b>border</b><code>#434141</code><span>Hairline 2 px</span></div></div></div><div class="swg"><h4>Text</h4><div class="sws"><div class="sw"><i style="background:#F7F5F5"></i><b>text-primary</b><code>#F7F5F5</code><span>Titles, focused labels</span></div><div class="sw"><i style="background:#C9C4C4"></i><b>text-secondary</b><code>#C9C4C4</code><span>Body, rested labels</span></div><div class="sw"><i style="background:#918989"></i><b>text-muted</b><code>#918989</code><span>Meta, disabled</span></div></div></div><div class="swg"><h4>Action and state</h4><div class="sws"><div class="sw"><i style="background:#D7192D"></i><b>action-primary</b><code>#D7192D</code><span>Focus fill, focus ring</span></div><div class="sw"><i style="background:#9F1021"></i><b>action-pressed</b><code>#9F1021</code><span>Pressed</span></div><div class="sw"><i style="background:#2FBF71"></i><b>on-air</b><code>#2FBF71</code><span>On air badge, live progress</span></div><div class="sw"><i style="background:#F7F5F5"></i><b>toast</b><code>#F7F5F5</code><span>Toast pill, black text</span></div></div></div></section>
+<section class="comp" id="foundations-type"><header><h3>Typography</h3><span class="fig">Figma · Text styles</span></header>
+<p class="desc">Inter with the Cyrillic subset. Sizes are for the 1920×1080 canvas; nothing a viewer has to read is smaller than 22 px.</p><div class="tys"><div class="ty"><span class="tn">Display<code>600 52px/56px</code></span><span class="tx" style="font:600 52px/56px Inter,sans-serif">Series title · 1</span></div><div class="ty"><span class="tn">Section title<code>600 40px/48px</code></span><span class="tx" style="font:600 40px/48px Inter,sans-serif">Recently added</span></div><div class="ty"><span class="tn">Card title<code>600 32px/40px</code></span><span class="tx" style="font:600 32px/40px Inter,sans-serif">TNT comedy series</span></div><div class="ty"><span class="tn">Button<code>500 28px/32px</code></span><span class="tx" style="font:500 28px/32px Inter,sans-serif">Continue watching</span></div><div class="ty"><span class="tn">Body<code>400 28px/40px</code></span><span class="tx" style="font:400 28px/40px Inter,sans-serif">Everything you start watching will appear here.</span></div><div class="ty"><span class="tn">Meta<code>400 22px/26px</code></span><span class="tx" style="font:400 22px/26px Inter,sans-serif">Season 1 · Episode 4</span></div><div class="ty"><span class="tn">Badge<code>500 24px/28px</code></span><span class="tx" style="font:500 24px/28px Inter,sans-serif">New</span></div></div></section>
+<section class="comp" id="foundations-shape"><header><h3>Shape</h3><span class="fig">Figma · Variables / Radius</span></header><p class="desc">Radius grows with the size of the element.</p><div class="ras"><div class="ra"><i style="border-radius:8px"></i><b>Badge</b><code>8px</code></div><div class="ra"><i style="border-radius:16px"></i><b>Tile</b><code>16px</code></div><div class="ra"><i style="border-radius:16px"></i><b>Card</b><code>16px</code></div><div class="ra"><i style="border-radius:28px"></i><b>Focus ring</b><code>28px</code></div><div class="ra"><i style="border-radius:40px"></i><b>Button, chip</b><code>40px</code></div></div></section>
+<section class="comp" id="foundations-focus"><header><h3>Focus</h3><span class="fig">Figma · Focus Ring</span></header>
+<p class="desc">One focus ring for the whole app. It is a single element that travels between items, so the eye follows one shape instead of watching items light up. 4 px red border, 8 px from the item, radius of the item plus 12.</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/card_new.webp" alt="Focus ring on a poster" loading="lazy"></div><figcaption><b>On a card</b><span>Ring around the card; the art scales to 1.05.</span></figcaption></figure>
+<figure class="st"><div class="shot"><img src="img/tile_chn.webp" alt="Focus ring on a channel tile" loading="lazy"></div><figcaption><b>On a tile</b><span>The same ring, a smaller radius.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs"><button class="on" data-t="css">CSS</button><button class="cp">Copy</button></div><pre data-p="css"><code>.ring{position:absolute;left:0;top:0;border:4px solid var(--red);pointer-events:none;will-change:transform,opacity}</code></pre></div></details></section>
+<section class="comp" id="foundations-motion"><header><h3>Motion</h3><span class="fig">Prototype · const M</span></header><p class="desc">Few durations, used everywhere. Only transform and opacity animate, which keeps low-end TVs smooth.</p>
+<table class="mt"><thead><tr><th>Token</th><th>Duration</th><th>Easing</th><th>Used for</th></tr></thead><tbody><tr><td>Focus move</td><td><code>340 ms</code></td><td><code>cubic-bezier(.25,.8,.25,1)</code></td><td>Ring and card scale</td></tr><tr><td>Fast</td><td><code>200 ms</code></td><td><code>linear</code></td><td>Fills, colours, labels</td></tr><tr><td>Menu open</td><td><code>280 ms</code></td><td><code>cubic-bezier(.2,.8,.2,1)</code></td><td>Menu expands</td></tr><tr><td>Menu close</td><td><code>200 ms</code></td><td><code>cubic-bezier(.4,0,1,1)</code></td><td>Menu collapses</td></tr><tr><td>Fade out / in</td><td><code>120 / 200 ms</code></td><td><code>linear</code></td><td>Grid swap on chip change</td></tr><tr><td>Toast</td><td><code>3 s</code></td><td><code>—</code></td><td>Time on screen</td></tr></tbody></table></section></article><article class="pg" id="navigation" data-page="navigation"><h2>Navigation</h2><p class="lead">How the viewer moves around the app with a D-pad: the side menu, the header, category chips and the page indicator.</p><section class="comp" id="navigation-menu">
+<header><h3>Menu</h3><span class="fig">Figma · Menu · Menu Item</span></header>
+<p class="desc">The side menu is the root of every main screen. It has three widths: open (focus is inside the menu), labelled (the page is a top-level list) and collapsed to icons (inside a title page or a category). The pill under an item marks where the viewer is; the red pill marks where the focus is.</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/menu_content.webp" width="384" height="1080" alt="Menu — Rested · labelled" loading="lazy"></div>
+<figcaption><b>Rested · labelled</b><span>Focus is on the page. The current section (Archive) keeps a dark grey pill.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/menu_focus.webp" width="384" height="1080" alt="Menu — Focused" loading="lazy"></div>
+<figcaption><b>Focused</b><span>Left from the page opens focus in the menu. The focused item fills red.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/menu_focus2.webp" width="384" height="1080" alt="Menu — Focused · moved" loading="lazy"></div>
+<figcaption><b>Focused · moved</b><span>Up and down move the red pill. The grey pill stays on the current section until Enter.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/menu_collapsed.webp" width="168" height="1080" alt="Menu — Collapsed" loading="lazy"></div>
+<figcaption><b>Collapsed</b><span>On title pages and categories the menu shrinks to icons to free the screen.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/menu_collapsed_focus.webp" width="384" height="1080" alt="Menu — Collapsed → focused" loading="lazy"></div>
+<figcaption><b>Collapsed → focused</b><span>Left from a collapsed page expands the menu again with labels.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;menu&quot; id=&quot;menu&quot; style=&quot;opacity: 1;&quot;&gt;
+  &lt;div id=&quot;panel&quot;&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;logo&quot; id=&quot;logo&quot;&gt;
+    &lt;svg class=&quot;compact&quot; fill=&quot;none&quot; style=&quot;opacity: 0;&quot; viewbox=&quot;0 0 65 65&quot;&gt;
+      …
+    &lt;/svg&gt;
+    &lt;svg class=&quot;full&quot; fill=&quot;none&quot; style=&quot;opacity: 1;&quot; viewbox=&quot;0 0 206 65&quot;&gt;
+      …
+    &lt;/svg&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;pill sel&quot; id=&quot;pSel&quot; style=&quot;opacity: 1;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;pill foc&quot; id=&quot;pFoc&quot; style=&quot;opacity: 0;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;lb&quot; style=&quot;opacity: 1;&quot;&gt;
+      Live TV
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;lb&quot; style=&quot;opacity: 1;&quot;&gt;
+      TV Archive
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;lb&quot; style=&quot;opacity: 1;&quot;&gt;
+      Archive
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;lb&quot; style=&quot;opacity: 1;&quot;&gt;
+      Movies
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;lb&quot; style=&quot;opacity: 1;&quot;&gt;
+      Series
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;lb&quot; style=&quot;opacity: 1;&quot;&gt;
+      Favourites
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;lb&quot; style=&quot;opacity: 1;&quot;&gt;
+      People
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;
+    &lt;div class=&quot;ic&quot; style=&quot;opacity: 1;&quot;&gt;
+      &lt;svg fill=&quot;none&quot; viewbox=&quot;0 0 56 56&quot;&gt;
+        …
+      &lt;/svg&gt;
+  &lt;!-- … --&gt;</code></pre><pre data-p="css" hidden><code>.menu {
+  position:absolute;
+  left:0;
+  top:0;
+  width:384px;
+  height:1080px;
+}
+.menu .logo {
+  position:absolute;
+  left:48px;
+  top:48px;
+  height:64px;
+}
+.menu .logo svg {
+  height:64px;
+  width:auto;
+  display:block;
+  position:absolute;
+  left:0;
+  top:0;
+}
+.item {
+  position:absolute;
+  left:48px;
+  height:72px;
+  width:324px;
+  cursor:pointer;
+}
+.item .ic {
+  position:absolute;
+  left:8px;
+  top:8px;
+  width:56px;
+  height:56px;
+}
+.item .ic svg {
+  width:56px;
+  height:56px;
+  display:block;
+}
+.item .lb {
+  position:absolute;
+  left:80px;
+  top:0;
+  font:500 28px/72px Inter,sans-serif;
+  white-space:nowrap;
+  will-change:opacity,transform;
+}
+.chcard.pp.ic {
+  width:176px;
+  height:176px;
+  padding:0;
+  border-radius:16px;
+  overflow:visible;
+  background:none;
+}
+.chcard.pp.ic .chname {
+  display:none;
+}
+.chcard.pp.ic .chtile {
+  width:176px;
+  height:176px;
+  border-radius:16px;
+}
+.chcard.pp.ic .chtile img {
+  left:-8px;
+  top:-8px;
+  width:192px;
+  height:192px;
+}
+.chcard.pp.ic.foc {
+  background:none;
+  box-shadow:0 0 0 4px #0F0D0D,0 0 0 12px var(--red);
+}
+.chcard.pp.ic.sel {
+  background:none;
+  box-shadow:0 0 0 4px #0F0D0D,0 0 0 10px #302C2C;
+}
+body.full .spec {
+  display:none;
+}
+body.full .bar {
+  position:fixed;
+  right:16px;
+  top:16px;
+  z-index:50;
+  padding:0;
+  border:0;
+  background:none;
+}
+body.full .bar&gt;*:not(#full) {
+  display:none;
+}
+body.full main {
+  display:block;
+  padding:0;
+}
+body.full .viewport {
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  aspect-ratio:auto;
+  border-radius:0;
+}
+body.full #full {
+  opacity:0;
+  transition:opacity .2s;
+}
+body.full #full:hover,body.full #full:focus-visible {
+  opacity:.9;
+}</code></pre></div></details>
+</section><section class="comp" id="navigation-header">
+<header><h3>Header · breadcrumb and clock</h3><span class="fig">Figma · Info Bar</span></header>
+<p class="desc">Every screen starts with the same header: where you are on the left and the date, city and time on the right. Inside a section the breadcrumb gets a back chip.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/info_root.webp" width="1504" height="120" alt="Header · breadcrumb and clock — Top level" loading="lazy"></div>
+<figcaption><b>Top level</b><span>Section name only.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/info_inner.webp" width="1752" height="120" alt="Header · breadcrumb and clock — Nested" loading="lazy"></div>
+<figcaption><b>Nested</b><span>Back chip + path. Back on the remote returns one level up.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;crumb&quot;&gt;
+  Archive
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.crumb {
+  position:absolute;
+  font:600 32px/40px Inter,sans-serif;
+  white-space:nowrap;
+  color:var(--txt);
+}
+.crumb .sl {
+  font-weight:400;
+  color:var(--mute);
+}
+.crumb .sub {
+  color:var(--mute);
+  display:inline-block;
+}
+.side .sl {
+  position:absolute;
+  left:24px;
+  top:88px;
+  width:464px;
+  height:880px;
+  overflow:hidden;
+}</code></pre></div></details>
+</section><section class="comp" id="navigation-chips">
+<header><h3>Category chips</h3><span class="fig">Figma · Tab / Chip</span></header>
+<p class="desc">A horizontal row of filters above a grid. The selected chip keeps a light pill; when the row has focus the chip under focus fills red. Other chips dim while the viewer is in the row.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/chips_rest.webp" width="1520" height="96" alt="Category chips — Rested" loading="lazy"></div>
+<figcaption><b>Rested</b><span>Focus is in the grid. The selected category keeps a light pill.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/chips_focus.webp" width="1520" height="96" alt="Category chips — Focused" loading="lazy"></div>
+<figcaption><b>Focused</b><span>Focus is in the row; Left/Right switch the category and the grid reloads.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;chip sel&quot; data-w=&quot;211&quot; data-x=&quot;0&quot;&gt;
+  Favourites
+&lt;/div&gt;
+&lt;div class=&quot;chip muted&quot; data-w=&quot;124&quot; data-x=&quot;227&quot;&gt;
+  Main
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.chip {
+  position:absolute;
+  top:0;
+  height:64px;
+  border-radius:32px;
+  font:600 32px/64px Inter,sans-serif;
+  text-align:center;
+  color:var(--txt);
+  white-space:nowrap;
+  transition:background-color .2s linear,color .2s linear;
+}
+.chip.muted {
+  color:var(--mute);
+}
+.chip.sel {
+  background:var(--tonal);
+}
+.chip.foc {
+  background:var(--red);
+  color:var(--txt);
+}
+.chip.tall {
+  height:72px;
+  line-height:72px;
+  border-radius:36px;
+}
+.chip.psb {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  box-shadow:inset 0 0 0 2px #434141;
+}
+.chip.psb.foc {
+  box-shadow:none;
+}
+.smode .chip {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+}</code></pre></div></details>
+</section><section class="comp" id="navigation-pager">
+<header><h3>Page indicator</h3><span class="fig">Figma · Pagination</span></header>
+<p class="desc">Vertical page numbers on the right edge of long grids. It is passive: it shows where the viewer is while Up/Down scroll the grid.</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/pager.webp" width="104" height="760" alt="Page indicator — Rested" loading="lazy"></div>
+<figcaption><b>Rested</b><span>Current page in white, others muted.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/pager_focus.webp" width="104" height="760" alt="Page indicator — Next page" loading="lazy"></div>
+<figcaption><b>Next page</b><span>After scrolling one page down the marker moves.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;pg&quot;&gt;
+  1
+&lt;/div&gt;
+&lt;div class=&quot;pg&quot;&gt;
+  2
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.pg {
+  position:absolute;
+  left:0;
+  width:72px;
+  height:56px;
+  font:500 28px/56px Inter,sans-serif;
+  text-align:center;
+  color:var(--txt);
+}
+.pg.last {
+  position:absolute;
+  left:0;
+  width:72px;
+  height:56px;
+  border-radius:28px;
+  transition:background-color .2s linear;
+}
+.pg.last.sel {
+  background:var(--tonal);
+}
+.pg.last.foc {
+  background:var(--red);
+}</code></pre></div></details>
+</section></article><article class="pg" id="cards" data-page="cards"><h2>Cards and tiles</h2><p class="lead">Everything the viewer picks from. All cards share one focus treatment: a red ring 4 px wide, 8 px off the card, and the card art scales to 1.05.</p><section class="comp" id="cards-catc">
+<header><h3>Category card</h3><span class="fig">Figma · Category Card</span></header>
+<p class="desc">Entry to Movies, Series, Shows and the other Archive categories. Each card has a cover and a cut-out figure that rises on focus.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/catc.webp" width="1172" height="232" alt="Category card — Focused + rested" loading="lazy"></div>
+<figcaption><b>Focused + rested</b><span>First card focused: red fill, ring, figure lifted. Second card at rest.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;catc&quot;&gt;
+  &lt;img alt=&quot;&quot; class=&quot;r&quot; src=&quot;c/catcvr0.jpg&quot;/&gt;
+  &lt;img alt=&quot;&quot; class=&quot;f&quot; src=&quot;c/catcvf0.jpg&quot;/&gt;
+  &lt;b&gt;
+    Movies
+  &lt;/b&gt;
+&lt;/div&gt;
+&lt;div class=&quot;catc&quot;&gt;
+  &lt;img alt=&quot;&quot; class=&quot;r&quot; src=&quot;c/catcvr1.jpg&quot;/&gt;
+  &lt;img alt=&quot;&quot; class=&quot;f&quot; src=&quot;c/catcvf1.jpg&quot;/&gt;
+  &lt;b&gt;
+    Series
+  &lt;/b&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.catc {
+  position:absolute;
+  left:0;
+  top:0;
+  width:552px;
+  height:176px;
+  border-radius:16px;
+  background:#181515;
+  overflow:hidden;
+  transition:background-color .2s linear;
+}
+.catc::after {
+  content:&#x27;&#x27;;
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  box-shadow:inset 0 0 0 2px #434141;
+  pointer-events:none;
+}
+.catc b {
+  position:absolute;
+  left:24px;
+  top:24px;
+  font:600 32px/40px Inter,sans-serif;
+  color:var(--txt);
+  white-space:pre-line;
+}
+.catc img {
+  position:absolute;
+  right:0;
+  top:2px;
+  width:188px;
+  height:172px;
+  transition:opacity .2s linear;
+}
+.catc img.f {
+  opacity:0;
+}
+.card.on .catc {
+  background:#D7192D;
+}
+.card.on .catc img.f {
+  opacity:1;
+}
+.card.on .catc img.r {
+  opacity:0;
+}</code></pre></div></details>
+</section><section class="comp" id="cards-poster">
+<header><h3>Poster card</h3><span class="fig">Figma · Poster Card</span></header>
+<p class="desc">The main content card. Badges are live: New, rating, a duration or seasons count. The progress bar appears only for titles the viewer has started. The tag on the card tells the type of page it opens (movie, series or show).</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/card_new.webp" width="996" height="310" alt="Poster card — New + rating" loading="lazy"></div>
+<figcaption><b>New + rating</b><span>Recently added titles carry a red New badge. Focused card has the ring.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/card_prd.webp" width="996" height="310" alt="Poster card — In progress" loading="lazy"></div>
+<figcaption><b>In progress</b><span>Started titles show a red progress bar and the season and episode.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;card on&quot;&gt;
+  &lt;div class=&quot;pst&quot;&gt;
+    &lt;img alt=&quot;&quot; src=&quot;https://framerusercontent.com/images/DnppNELX80STXO2i6C0SY7JqGA.png&quot; style=&quot;position: absolute; object-fit: none; object-position: 0px 0px; border-radius: 0px;&quot;/&gt;
+    &lt;i class=&quot;nw&quot;&gt;
+      New
+    &lt;/i&gt;
+    &lt;i class=&quot;rt&quot;&gt;
+      &lt;svg height=&quot;24&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;24&quot;&gt;
+        …
+      &lt;/svg&gt;
+      4.9
+    &lt;/i&gt;
+    &lt;span class=&quot;mrow&quot;&gt;
+      &lt;i&gt;
+        4 seasons
+      &lt;/i&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;t&quot; style=&quot;opacity: 1;&quot;&gt;
+    &lt;span&gt;
+      The Age of Happiness
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;
+  &lt;div class=&quot;pst&quot;&gt;
+    &lt;img alt=&quot;&quot; src=&quot;https://framerusercontent.com/images/DnppNELX80STXO2i6C0SY7JqGA.png&quot; style=&quot;position: absolute; object-fit: none; object-position: -464px 0px; border-radius: 0px;&quot;/&gt;
+    &lt;i class=&quot;nw&quot;&gt;
+      New
+    &lt;/i&gt;
+    &lt;i class=&quot;rt&quot;&gt;
+      &lt;svg height=&quot;24&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;24&quot;&gt;
+        …
+      &lt;/svg&gt;
+      4.9
+    &lt;/i&gt;
+    &lt;span class=&quot;mrow&quot;&gt;
+      &lt;i&gt;
+        12 episodes
+      &lt;/i&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;t&quot; style=&quot;opacity: 1;&quot;&gt;
+    &lt;span&gt;
+      The Handmaid’s Tale
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.pst {
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+  isolation:isolate;
+  background:#1b1818;
+}
+.pst::before {
+  content:&quot;&quot;;
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(13,11,11,.35) 0%,rgba(13,11,11,0) 30%,rgba(13,11,11,0) 55%,rgba(13,11,11,.55) 100%);
+  z-index:1;
+  pointer-events:none;
+}
+.pst i {
+  font-style:normal;
+  position:absolute;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  height:44px;
+  padding:0 16px;
+  border-radius:22px;
+  font:500 24px/44px Inter,sans-serif;
+  color:var(--txt);
+  white-space:nowrap;
+}
+.pst i svg {
+  width:26px;
+  height:26px;
+}
+.pst .nw {
+  left:16px;
+  top:16px;
+  background:var(--red);
+}
+.pst .rt {
+  right:16px;
+  top:16px;
+  background:rgba(13,11,11,.8);
+}
+.pst .rt svg path {
+  fill:#F7F5F5;
+}
+.pst .mrow {
+  position:absolute;
+  z-index:2;
+  left:16px;
+  bottom:38px;
+  display:flex;
+  gap:8px;
+}
+.pst .mrow i {
+  position:static;
+  background:rgba(13,11,11,.85);
+}
+.pst i.pb {
+  left:16px;
+  right:16px;
+  bottom:16px;
+  height:6px;
+  padding:0;
+  border-radius:3px;
+  background:rgba(255,255,255,.18);
+  display:block;
+}
+.pst i.pb u {
+  display:block;
+  height:6px;
+  border-radius:3px;
+  background:var(--red);
+}
+.pst.coll::before {
+  background:linear-gradient(180deg,rgba(13,11,11,0) 45%,rgba(13,11,11,.92) 100%);
+}
+.pst.coll b {
+  position:absolute;
+  z-index:2;
+  left:24px;
+  right:24px;
+  bottom:24px;
+  font:600 32px/40px Inter,sans-serif;
+  color:var(--txt2);
+}
+.card.on .pst.coll b {
+  color:var(--txt);
+}
+.card {
+  position:absolute;
+  top:0;
+}
+.card img {
+  position:static;
+  display:block;
+  border-radius:var(--r);
+}
+.card .t {
+  position:absolute;
+  left:0;
+  overflow:hidden;
+  white-space:nowrap;
+  font:400 28px/32px Inter,sans-serif;
+  color:var(--txt2);
+  opacity:0;
+}
+.card .t span {
+  display:inline-block;
+  will-change:transform;
+}
+.card .t.fade {
+  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,#000 88%,transparent);
+}
+.card.on .t {
+  color:var(--txt);
+}
+.card .fimg {
+  position:absolute;
+  left:0;
+  top:0;
+  opacity:0;
+  transform:scale(.95);
+  transition:opacity 200ms linear,transform 340ms cubic-bezier(.25,.8,.25,1);
+  will-change:opacity,transform;
+}
+.card.on .fimg {
+  opacity:1;
+  transform:none;
+}
+.ph .pb {
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:18px;
+  height:6px;
+  border-radius:3px;
+  background:rgba(255,255,255,.12);
+}
+.ph .pb u {
+  display:block;
+  height:6px;
+  border-radius:3px;
+  background:rgba(255,255,255,.35);
+}
+.ph .nw {
+  left:16px;
+  top:16px;
+  background:var(--red);
+  padding:0 16px;
+}
+.ph .rt {
+  right:16px;
+  top:16px;
+  background:rgba(13,11,11,.8);
+  color:#F7F5F5;
+}
+.ph i.pb {
+  left:18px;
+  right:18px;
+  bottom:18px;
+  height:6px;
+  padding:0;
+  border-radius:3px;
+  background:rgba(255,255,255,.12);
+  display:block;
+}
+.card .av {
+  width:200px;
+  height:200px;
+  border-radius:50%;
+  background:#242020;
+  border:2px solid #2a2525;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card .pn {
+  position:absolute;
+  left:-20px;
+  top:216px;
+  width:240px;
+  text-align:center;
+  font:500 24px/32px Inter,sans-serif;
+  color:var(--txt2);
+}
+.card .pr {
+  position:absolute;
+  left:-20px;
+  top:248px;
+  width:240px;
+  text-align:center;
+  font:400 22px/28px Inter,sans-serif;
+  color:var(--mute);
+}
+.card.on .pn {
+  color:var(--txt);
+}
+.card.on .pcard::after {
+  opacity:0;
+}
+.card.on .pcard .pc {
+  transform:scale(1.05);
+}
+.qa .qat.fade {
+  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,#000 88%,transparent);
+}
+.pslab em.nw {
+  background:#302C2C;
+  color:var(--txt);
+}
+.erow s.nw {
+  background:#302C2C;
+  color:var(--txt);
+  border-radius:20px;
+  padding:0 14px;
+  line-height:40px;
+}
+.card.on .ccard::after {
+  box-shadow:none;
+}
+.card.on .ccard .cin {
+  transform:scale(1.05);
+}
+.card.on .ccard b {
+  color:var(--txt);
+}
+.lktag.nw {
+  background:rgba(13,11,11,.8);
+  color:var(--txt);
+}
+.card.on .ivmore.fillon {
+  background:var(--red);
+  box-shadow:none;
+}
+.card.on .catc {
+  background:#D7192D;
+}
+.card.on .catc img.f {
+  opacity:1;
+}
+.card.on .catc img.r {
+  opacity:0;
+}
+.card.on .spc::after {
+  opacity:0;
+}
+.card.on .ptph {
+  box-shadow:none;
+}</code></pre></div></details>
+</section><section class="comp" id="cards-coll">
+<header><h3>Collection card</h3><span class="fig">Figma · Collection Card</span></header>
+<p class="desc">Tall card for curated collections. Opens the collection page directly. The last card in the row is All collections.</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/card_coll.webp" width="756" height="538" alt="Collection card — Focused + rested" loading="lazy"></div>
+<figcaption><b>Focused + rested</b><span>Focused card: ring and white title. Rested: title in secondary text.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/ccard.webp" width="860" height="611" alt="Collection card — Collection page card" loading="lazy"></div>
+<figcaption><b>Collection page card</b><span>On the All collections page the cards use a tinted gradient and a film icon.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;card on&quot;&gt;
+  &lt;div class=&quot;pst coll&quot;&gt;
+    &lt;img alt=&quot;&quot; src=&quot;https://framerusercontent.com/images/DnppNELX80STXO2i6C0SY7JqGA.png&quot; style=&quot;position: absolute; object-fit: none; object-position: 0px -762px; border-radius: 0px;&quot;/&gt;
+    &lt;b&gt;
+      TNT comedy series
+    &lt;/b&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;
+  &lt;div class=&quot;pst coll&quot;&gt;
+    &lt;img alt=&quot;&quot; src=&quot;https://framerusercontent.com/images/DnppNELX80STXO2i6C0SY7JqGA.png&quot; style=&quot;position: absolute; object-fit: none; object-position: -344px -762px; border-radius: 0px;&quot;/&gt;
+    &lt;b&gt;
+      New fairy tales on eTVnet
+    &lt;/b&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.pst {
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+  isolation:isolate;
+  background:#1b1818;
+}
+.pst::before {
+  content:&quot;&quot;;
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(13,11,11,.35) 0%,rgba(13,11,11,0) 30%,rgba(13,11,11,0) 55%,rgba(13,11,11,.55) 100%);
+  z-index:1;
+  pointer-events:none;
+}
+.pst i {
+  font-style:normal;
+  position:absolute;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  height:44px;
+  padding:0 16px;
+  border-radius:22px;
+  font:500 24px/44px Inter,sans-serif;
+  color:var(--txt);
+  white-space:nowrap;
+}
+.pst i svg {
+  width:26px;
+  height:26px;
+}
+.pst .nw {
+  left:16px;
+  top:16px;
+  background:var(--red);
+}
+.pst .rt {
+  right:16px;
+  top:16px;
+  background:rgba(13,11,11,.8);
+}
+.pst .rt svg path {
+  fill:#F7F5F5;
+}
+.pst .mrow {
+  position:absolute;
+  z-index:2;
+  left:16px;
+  bottom:38px;
+  display:flex;
+  gap:8px;
+}
+.pst .mrow i {
+  position:static;
+  background:rgba(13,11,11,.85);
+}
+.pst i.pb {
+  left:16px;
+  right:16px;
+  bottom:16px;
+  height:6px;
+  padding:0;
+  border-radius:3px;
+  background:rgba(255,255,255,.18);
+  display:block;
+}
+.pst i.pb u {
+  display:block;
+  height:6px;
+  border-radius:3px;
+  background:var(--red);
+}
+.pst.coll::before {
+  background:linear-gradient(180deg,rgba(13,11,11,0) 45%,rgba(13,11,11,.92) 100%);
+}
+.pst.coll b {
+  position:absolute;
+  z-index:2;
+  left:24px;
+  right:24px;
+  bottom:24px;
+  font:600 32px/40px Inter,sans-serif;
+  color:var(--txt2);
+}
+.card.on .pst.coll b {
+  color:var(--txt);
+}
+.card {
+  position:absolute;
+  top:0;
+}
+.card img {
+  position:static;
+  display:block;
+  border-radius:var(--r);
+}
+.card .t {
+  position:absolute;
+  left:0;
+  overflow:hidden;
+  white-space:nowrap;
+  font:400 28px/32px Inter,sans-serif;
+  color:var(--txt2);
+  opacity:0;
+}
+.card .t span {
+  display:inline-block;
+  will-change:transform;
+}
+.card .t.fade {
+  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,#000 88%,transparent);
+}
+.card.on .t {
+  color:var(--txt);
+}
+.card .fimg {
+  position:absolute;
+  left:0;
+  top:0;
+  opacity:0;
+  transform:scale(.95);
+  transition:opacity 200ms linear,transform 340ms cubic-bezier(.25,.8,.25,1);
+  will-change:opacity,transform;
+}
+.card.on .fimg {
+  opacity:1;
+  transform:none;
+}
+.card .av {
+  width:200px;
+  height:200px;
+  border-radius:50%;
+  background:#242020;
+  border:2px solid #2a2525;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card .pn {
+  position:absolute;
+  left:-20px;
+  top:216px;
+  width:240px;
+  text-align:center;
+  font:500 24px/32px Inter,sans-serif;
+  color:var(--txt2);
+}
+.card .pr {
+  position:absolute;
+  left:-20px;
+  top:248px;
+  width:240px;
+  text-align:center;
+  font:400 22px/28px Inter,sans-serif;
+  color:var(--mute);
+}
+.card.on .pn {
+  color:var(--txt);
+}
+.card.on .pcard::after {
+  opacity:0;
+}
+.card.on .pcard .pc {
+  transform:scale(1.05);
+}
+.ccard {
+  position:relative;
+  width:396px;
+  height:555px;
+  border-radius:16px;
+  overflow:hidden;
+}
+.ccard .cin {
+  position:absolute;
+  inset:0;
+  transform-origin:50% 50%;
+  transition:transform 340ms cubic-bezier(.25,.8,.25,1);
+}
+.ccard .cic {
+  position:absolute;
+  left:50%;
+  top:40%;
+  transform:translate(-50%,-50%) scale(2);
+  opacity:.45;
+}
+.ccard .cgr {
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:60%;
+  background:linear-gradient(180deg,rgba(24,21,21,0),#181515);
+}
+.ccard b {
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:18px;
+  font:600 32px/37px Inter,sans-serif;
+  color:var(--txt2);
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  transition:color .2s linear;
+}
+.ccard::after {
+  content:&#x27;&#x27;;
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  box-shadow:inset 0 0 0 2px #434141;
+  pointer-events:none;
+}
+.card.on .ccard::after {
+  box-shadow:none;
+}
+.card.on .ccard .cin {
+  transform:scale(1.05);
+}
+.card.on .ccard b {
+  color:var(--txt);
+}
+.cic {
+  position:absolute;
+  left:0;
+  top:0;
+  width:416px;
+  height:480px;
+  border-radius:16px 16px 0 0;
+  overflow:hidden;
+}
+.card.on .ivmore.fillon {
+  background:var(--red);
+  box-shadow:none;
+}
+.card.on .catc {
+  background:#D7192D;
+}
+.card.on .catc img.f {
+  opacity:1;
+}
+.card.on .catc img.r {
+  opacity:0;
+}
+.card.on .spc::after {
+  opacity:0;
+}
+.card.on .ptph {
+  box-shadow:none;
+}</code></pre></div></details>
+</section><section class="comp" id="cards-more">
+<header><h3>See-all card</h3><span class="fig">Figma · See All Card</span></header>
+<p class="desc">Closes a partner row (for example Ivi). Takes the viewer to the full partner catalogue.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/card_ivmore.webp" width="520" height="310" alt="See-all card — Focused" loading="lazy"></div>
+<figcaption><b>Focused</b><span>Partner logo + label with an arrow.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;card on&quot;&gt;
+  &lt;div class=&quot;ivmore&quot;&gt;
+    &lt;img alt=&quot;&quot; src=&quot;img/ivi.png&quot;/&gt;
+    &lt;b&gt;
+      All Ivi content  →
+    &lt;/b&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.card.on .pst.coll b {
+  color:var(--txt);
+}
+.card {
+  position:absolute;
+  top:0;
+}
+.card img {
+  position:static;
+  display:block;
+  border-radius:var(--r);
+}
+.card .t {
+  position:absolute;
+  left:0;
+  overflow:hidden;
+  white-space:nowrap;
+  font:400 28px/32px Inter,sans-serif;
+  color:var(--txt2);
+  opacity:0;
+}
+.card .t span {
+  display:inline-block;
+  will-change:transform;
+}
+.card .t.fade {
+  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,#000 88%,transparent);
+}
+.card.on .t {
+  color:var(--txt);
+}
+.card .fimg {
+  position:absolute;
+  left:0;
+  top:0;
+  opacity:0;
+  transform:scale(.95);
+  transition:opacity 200ms linear,transform 340ms cubic-bezier(.25,.8,.25,1);
+  will-change:opacity,transform;
+}
+.card.on .fimg {
+  opacity:1;
+  transform:none;
+}
+.card .av {
+  width:200px;
+  height:200px;
+  border-radius:50%;
+  background:#242020;
+  border:2px solid #2a2525;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card .pn {
+  position:absolute;
+  left:-20px;
+  top:216px;
+  width:240px;
+  text-align:center;
+  font:500 24px/32px Inter,sans-serif;
+  color:var(--txt2);
+}
+.card .pr {
+  position:absolute;
+  left:-20px;
+  top:248px;
+  width:240px;
+  text-align:center;
+  font:400 22px/28px Inter,sans-serif;
+  color:var(--mute);
+}
+.card.on .pn {
+  color:var(--txt);
+}
+.card.on .pcard::after {
+  opacity:0;
+}
+.card.on .pcard .pc {
+  transform:scale(1.05);
+}
+.card.on .ccard::after {
+  box-shadow:none;
+}
+.card.on .ccard .cin {
+  transform:scale(1.05);
+}
+.card.on .ccard b {
+  color:var(--txt);
+}
+.ivmore {
+  border-radius:16px;
+  background:#242020;
+  box-shadow:inset 0 0 0 2px #434141;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+}
+.ivmore img {
+  position:static!important;
+  width:200px;
+  height:auto;
+  border-radius:0!important;
+}
+.ivmore b {
+  font:500 28px/32px Inter,sans-serif;
+  color:var(--txt);
+}
+.ivmore.fillon {
+  text-align:center;
+  padding:0 16px;
+  box-sizing:border-box;
+  transition:background-color 120ms linear;
+}
+.card.on .ivmore.fillon {
+  background:var(--red);
+  box-shadow:none;
+}
+.card.on .catc {
+  background:#D7192D;
+}
+.card.on .catc img.f {
+  opacity:1;
+}
+.card.on .catc img.r {
+  opacity:0;
+}
+.card.on .spc::after {
+  opacity:0;
+}
+.card.on .ptph {
+  box-shadow:none;
+}</code></pre></div></details>
+</section><section class="comp" id="cards-chn">
+<header><h3>Channel tile</h3><span class="fig">Figma · Channel Tile</span></header>
+<p class="desc">Square channel logo for the TV Archive. The row ends with All channels, which fills red on focus.</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/tile_chn.webp" width="852" height="240" alt="Channel tile — Focused + rested" loading="lazy"></div>
+<figcaption><b>Focused + rested</b><span>Focused logo gets the ring; logos keep their own brand background.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/tile_all.webp" width="428" height="232" alt="Channel tile — All channels · focused" loading="lazy"></div>
+<figcaption><b>All channels · focused</b><span>End tile fills red completely, label in white.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;card on&quot;&gt;
+  &lt;div class=&quot;chbox&quot;&gt;
+    &lt;img height=&quot;184&quot; src=&quot;c/chn10.jpg&quot; width=&quot;184&quot;/&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;
+  &lt;div class=&quot;chbox&quot;&gt;
+    &lt;img height=&quot;184&quot; src=&quot;c/chn0.jpg&quot; width=&quot;184&quot;/&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.card.on .pst.coll b {
+  color:var(--txt);
+}
+.card {
+  position:absolute;
+  top:0;
+}
+.card img {
+  position:static;
+  display:block;
+  border-radius:var(--r);
+}
+.card .t {
+  position:absolute;
+  left:0;
+  overflow:hidden;
+  white-space:nowrap;
+  font:400 28px/32px Inter,sans-serif;
+  color:var(--txt2);
+  opacity:0;
+}
+.card .t span {
+  display:inline-block;
+  will-change:transform;
+}
+.card .t.fade {
+  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,#000 88%,transparent);
+}
+.card.on .t {
+  color:var(--txt);
+}
+.card .fimg {
+  position:absolute;
+  left:0;
+  top:0;
+  opacity:0;
+  transform:scale(.95);
+  transition:opacity 200ms linear,transform 340ms cubic-bezier(.25,.8,.25,1);
+  will-change:opacity,transform;
+}
+.card.on .fimg {
+  opacity:1;
+  transform:none;
+}
+.card .av {
+  width:200px;
+  height:200px;
+  border-radius:50%;
+  background:#242020;
+  border:2px solid #2a2525;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card .pn {
+  position:absolute;
+  left:-20px;
+  top:216px;
+  width:240px;
+  text-align:center;
+  font:500 24px/32px Inter,sans-serif;
+  color:var(--txt2);
+}
+.card .pr {
+  position:absolute;
+  left:-20px;
+  top:248px;
+  width:240px;
+  text-align:center;
+  font:400 22px/28px Inter,sans-serif;
+  color:var(--mute);
+}
+.card.on .pn {
+  color:var(--txt);
+}
+.card.on .pcard::after {
+  opacity:0;
+}
+.card.on .pcard .pc {
+  transform:scale(1.05);
+}
+.card.on .ccard::after {
+  box-shadow:none;
+}
+.card.on .ccard .cin {
+  transform:scale(1.05);
+}
+.card.on .ccard b {
+  color:var(--txt);
+}
+.chbox {
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+}
+.chbox::after {
+  content:&#x27;&#x27;;
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.08);
+}
+.chbox img {
+  position:absolute!important;
+  left:-6px;
+  top:-6px;
+  width:calc(100% + 10px)!important;
+  height:calc(100% + 10px)!important;
+  border-radius:0!important;
+}
+.ivmore {
+  border-radius:16px;
+  background:#242020;
+  box-shadow:inset 0 0 0 2px #434141;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+}
+.ivmore img {
+  position:static!important;
+  width:200px;
+  height:auto;
+  border-radius:0!important;
+}
+.ivmore b {
+  font:500 28px/32px Inter,sans-serif;
+  color:var(--txt);
+}
+.ivmore.fillon {
+  text-align:center;
+  padding:0 16px;
+  box-sizing:border-box;
+  transition:background-color 120ms linear;
+}
+.card.on .ivmore.fillon {
+  background:var(--red);
+  box-shadow:none;
+}
+.card.on .catc {
+  background:#D7192D;
+}
+.card.on .catc img.f {
+  opacity:1;
+}
+.card.on .catc img.r {
+  opacity:0;
+}
+.card.on .spc::after {
+  opacity:0;
+}
+.card.on .ptph {
+  box-shadow:none;
+}</code></pre></div></details>
+</section><section class="comp" id="cards-person">
+<header><h3>Person card</h3><span class="fig">Figma · Person Card</span></header>
+<p class="desc">Actors, directors and presenters. Photo placeholder, name, role and rating.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/person_row.webp" width="1768" height="164" alt="Person card — Focused + rested" loading="lazy"></div>
+<figcaption><b>Focused + rested</b><span>First card focused with the ring.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;pcard&quot;&gt;
+  &lt;div class=&quot;pc&quot;&gt;
+    &lt;div class=&quot;pav&quot; style=&quot;background: linear-gradient(160deg, rgb(56, 44, 46) 0%, rgb(27, 24, 24) 100%);&quot;&gt;
+      &lt;svg fill=&quot;none&quot; height=&quot;176&quot; viewbox=&quot;0 0 128 176&quot; width=&quot;128&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;ptx&quot;&gt;
+      &lt;div class=&quot;pnm&quot;&gt;
+        Smirnov
+Alexey
+      &lt;/div&gt;
+      &lt;div class=&quot;pmeta&quot;&gt;
+        &lt;span&gt;
+          Actor
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;pcard&quot;&gt;
+  &lt;div class=&quot;pc&quot;&gt;
+    &lt;div class=&quot;pav&quot; style=&quot;background: linear-gradient(160deg, rgb(46, 48, 56) 0%, rgb(27, 24, 24) 100%);&quot;&gt;
+      &lt;svg fill=&quot;none&quot; height=&quot;176&quot; viewbox=&quot;0 0 128 176&quot; width=&quot;128&quot;&gt;
+        …
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;ptx&quot;&gt;
+      &lt;div class=&quot;pnm&quot;&gt;
+        Orlova
+Maria
+      &lt;/div&gt;
+      &lt;div class=&quot;pmeta&quot;&gt;
+        &lt;span&gt;
+          Actress
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.pcard {
+  position:relative;
+  width:448px;
+  height:176px;
+  border-radius:16px;
+  background:#181515;
+  overflow:hidden;
+}
+.pcard::after {
+  content:&#x27;&#x27;;
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  border:2px solid #434141;
+  transition:opacity .2s linear;
+  pointer-events:none;
+}
+.card.on .pcard::after {
+  opacity:0;
+}
+.pcard .pc {
+  position:absolute;
+  left:0;
+  top:0;
+  width:448px;
+  height:176px;
+  display:flex;
+  transform-origin:0 0;
+  transition:transform 340ms cubic-bezier(.25,.8,.25,1);
+  will-change:transform;
+}
+.card.on .pcard .pc {
+  transform:scale(1.05);
+}
+.pcard .pav {
+  flex:none;
+  width:128px;
+  height:176px;
+  overflow:hidden;
+}
+.pcard .pav svg {
+  display:block;
+}
+.pcard .ptx {
+  flex:none;
+  width:320px;
+  height:176px;
+  box-sizing:border-box;
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.pcard .pnm {
+  font:600 28px/32px Inter,sans-serif;
+  color:var(--txt);
+  white-space:pre-line;
+}
+.pcard .pmeta {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font:400 24px/32px Inter,sans-serif;
+  color:var(--mute);
+}
+.pcard .prt {
+  font-style:normal;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  height:32px;
+  color:#F7F5F5;
+  font:500 24px/32px Inter,sans-serif;
+}
+.pcard.L,.pcard.L .pc {
+  width:512px;
+  height:216px;
+}
+.pcard.L .pav {
+  width:160px;
+  height:216px;
+}
+.pcard.L .ptx {
+  width:352px;
+  height:216px;
+}
+.pcard .pav svg {
+  width:100%;
+  height:100%;
+}
+.pcard .pav.none {
+  background:#242020;
+}
+.chpass .pnm {
+  position:absolute;
+  left:64px;
+  right:64px;
+  top:312px;
+  font:600 80px/88px Inter,sans-serif;
+  color:var(--txt);
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.chpass.wide.hp .pnm {
+  right:auto;
+  width:720px;
+}
+.chpass .pprev .pc {
+  position:absolute;
+  width:512px;
+  height:288px;
+  object-fit:cover;
+  border-radius:16px;
+  outline:2px solid rgba(255,255,255,.12);
+  outline-offset:-2px;
+  box-shadow:0 24px 56px rgba(0,0,0,.55);
+  animation:pcIn .32s cubic-bezier(.2,0,0,1) both;
+}
+.chpass .pprev.vA .pc {
+  width:640px;
+  height:360px;
+}
+.chpass.wide .ptitle .pnm,.chpass.wide .ptitle .pty {
+  position:static;
+  width:auto;
+}
+.chpass.wide .ptitle .pnm {
+  -webkit-line-clamp:3;
+}</code></pre></div></details>
+</section></article><article class="pg" id="live" data-page="live"><h2>Live TV</h2><p class="lead">Watching channels as they air: the tile grid, the channel panel on the right and the list view.</p><section class="comp" id="live-ltile">
+<header><h3>Live channel tile</h3><span class="fig">Figma · Live Tile</span></header>
+<p class="desc">Channel logo tile in the Live TV grid. Focus updates the channel panel on the right without opening the channel.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/ltile.webp" width="604" height="216" alt="Live channel tile — Focused + rested" loading="lazy"></div>
+<figcaption><b>Focused + rested</b><span>Focused tile has the ring; Enter starts the channel.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;ltile&quot;&gt;
+  &lt;img alt=&quot;&quot; src=&quot;img/lt0.jpg&quot;/&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ltile&quot;&gt;
+  &lt;img alt=&quot;&quot; src=&quot;img/lt1.jpg&quot;/&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.ltile {
+  position:absolute;
+  width:224px;
+  height:224px;
+  border-radius:16px;
+  overflow:hidden;
+  background:#242020;
+}
+.ltile img {
+  width:100%;
+  height:100%;
+  display:block;
+}</code></pre></div></details>
+</section><section class="comp" id="live-cip">
+<header><h3>Channel panel</h3><span class="fig">Figma · Channel Info Panel</span></header>
+<p class="desc">Shows what is on the focused channel: the current show with a green On air badge and progress, then the next three shows.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/cip.webp" width="416" height="872" alt="Channel panel — Default" loading="lazy"></div>
+<figcaption><b>Default</b><span>Updates as focus moves across tiles.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;cip&quot;&gt;
+  &lt;div class=&quot;cil&quot; style=&quot;opacity: 0; z-index: 1;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;cil&quot; style=&quot;opacity: 1; z-index: 2;&quot;&gt;
+    &lt;div class=&quot;cic&quot; style=&quot;background:linear-gradient(180deg,rgb(11,52,163) 32px,rgb(12,32,85) 224px)&quot;&gt;
+      &lt;div class=&quot;cilg&quot;&gt;
+        &lt;img alt=&quot;&quot; src=&quot;img/lg0.png&quot;/&gt;
+      &lt;/div&gt;
+      &lt;i class=&quot;cish&quot;&gt;
+      &lt;/i&gt;
+      &lt;div class=&quot;cinm&quot;&gt;
+        &lt;b lang=&quot;ru&quot;&gt;
+          Publika TV
+        &lt;/b&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;ciz&quot;&gt;
+      &lt;div class=&quot;cinw&quot;&gt;
+        &lt;div class=&quot;cit&quot;&gt;
+          &lt;span&gt;
+            00:30 – 01:30
+          &lt;/span&gt;
+          &lt;em&gt;
+            On air
+          &lt;/em&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;citt&quot;&gt;
+          Morning news
+        &lt;/div&gt;
+        &lt;div class=&quot;cipb&quot;&gt;
+          &lt;u style=&quot;width:56.7%&quot;&gt;
+          &lt;/u&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;cinx&quot;&gt;
+        &lt;p&gt;
+          &lt;i&gt;
+            01:30
+          &lt;/i&gt;
+          &lt;span&gt;
+            Economy this week
+          &lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;i&gt;
+            02:00
+          &lt;/i&gt;
+          &lt;span&gt;
+            Public opinion
+          &lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+          &lt;i&gt;
+            03:00
+          &lt;/i&gt;
+          &lt;span&gt;
+            News
+          &lt;/span&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.ccard .cic {
+  position:absolute;
+  left:50%;
+  top:40%;
+  transform:translate(-50%,-50%) scale(2);
+  opacity:.45;
+}
+.cip {
+  position:absolute;
+  left:1456px;
+  top:160px;
+  width:416px;
+  height:872px;
+}
+.cil {
+  position:absolute;
+  inset:0;
+  background:#0D0B0B;
+  overflow:hidden;
+}
+.cic {
+  position:absolute;
+  left:0;
+  top:0;
+  width:416px;
+  height:480px;
+  border-radius:16px 16px 0 0;
+  overflow:hidden;
+}
+.cilg {
+  position:absolute;
+  left:112px;
+  top:32px;
+  width:192px;
+  height:192px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.cilg img {
+  max-width:192px;
+  max-height:160px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+}
+.cish {
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(13,11,11,0) 0%,rgba(13,11,11,0) 30%,rgba(13,11,11,.6) 50%,rgba(13,11,11,.88) 68%,#0D0B0B 92%);
+}
+.cinm {
+  position:absolute;
+  left:16px;
+  top:288px;
+  width:384px;
+  height:168px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+.cinm b {
+  font:600 52px/56px Inter,sans-serif;
+  color:#F7F5F5;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+  overflow-wrap:break-word;
+  hyphens:auto;
+}
+.cinw {
+  position:absolute;
+  left:16px;
+  top:504px;
+  width:384px;
+  height:152px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  gap:12px;
+}
+.cit {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  height:40px;
+  font:400 28px/40px Inter,sans-serif;
+  color:#918989;
+}
+.cit em {
+  font-style:normal;
+  background:#2FBF71;
+  color:#0D0B0B;
+  border-radius:999px;
+  padding:4px 16px;
+  font:400 28px/32px Inter,sans-serif;
+}
+.citt {
+  font:600 32px/40px Inter,sans-serif;
+  color:#F7F5F5;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
+.cipb {
+  height:8px;
+  border-radius:4px;
+  background:#242020;
+  overflow:hidden;
+  flex:none;
+}
+.cipb u {
+  display:block;
+  height:8px;
+  border-radius:4px;
+  background:#2FBF71;
+}
+.cinx {
+  position:absolute;
+  left:16px;
+  top:704px;
+  width:384px;
+  height:152px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.cinx p {
+  display:flex;
+  align-items:center;
+  gap:24px;
+  height:40px;
+  margin:0;
+  font:400 28px/40px Inter,sans-serif;
+}
+.cinx p i {
+  font-style:normal;
+  width:80px;
+  flex:none;
+  color:#918989;
+}
+.cinx p span {
+  color:#C9C4C4;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  flex:1;
+  min-width:0;
+}
+.cip .sk {
+  display:block;
+  height:24px;
+  border-radius:8px;
+  background:#242020;
+  flex:none;
+}</code></pre></div></details>
+</section><section class="comp" id="live-llh">
+<header><h3>Group header</h3><span class="fig">Figma · List Header</span></header>
+<p class="desc">Title of a channel group with the channel count on the right.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/llh.webp" width="1000" height="72" alt="Group header — Default" loading="lazy"></div>
+<figcaption><b>Default</b><span>Group name + count.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;llh&quot;&gt;
+  &lt;b&gt;
+    Favourites
+  &lt;/b&gt;
+  &lt;span&gt;
+    4 Channels
+  &lt;/span&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.llh {
+  position:absolute;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.llh b {
+  font:600 40px/48px Inter,sans-serif;
+}
+.llh span {
+  font:400 28px/36px Inter,sans-serif;
+  color:var(--mute);
+}</code></pre></div></details>
+</section><section class="comp" id="live-livelist">
+<header><h3>List view</h3><span class="fig">Figma · Live List Row</span></header>
+<p class="desc">Alternative Live TV layout: one row per channel with the current show and progress. The focused row shows an arrow button that opens the channel TV guide.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/livelist.webp" width="1920" height="1080" alt="List view — Focused row" loading="lazy"></div>
+<figcaption><b>Focused row</b><span>Ring on the row; the red arrow on the right opens the guide.</span></figcaption></figure></div>
+
+</section></article><article class="pg" id="player" data-page="player"><h2>Player</h2><p class="lead">Controls over live and archive video. Controls appear on any key and hide after a few seconds.</p><section class="comp" id="player-ptop">
+<header><h3>Player header</h3><span class="fig">Figma · Player Top Bar</span></header>
+<p class="desc">Channel logo, channel name and the show, with the clock on the right. Sits on a dark gradient so it reads over any picture.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/ptop.webp" width="1920" height="280" alt="Player header — Default" loading="lazy"></div>
+<figcaption><b>Default</b><span>Visible together with the controls.</span></figcaption></figure></div>
+
+</section><section class="comp" id="player-pbot">
+<header><h3>Player controls</h3><span class="fig">Figma · Player Controls · Player Button</span></header>
+<p class="desc">Timeline with time, then three groups: TV guide on the left, playback in the centre, server, favourites and Live TV on the right. The focused button fills red and shows its name under it.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/pbot.webp" width="1872" height="274" alt="Player controls — Pause focused" loading="lazy"></div>
+<figcaption><b>Pause focused</b><span>Default focus when controls open.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/pbot_guide.webp" width="1872" height="274" alt="Player controls — TV guide focused" loading="lazy"></div>
+<figcaption><b>TV guide focused</b><span>Pill button with a label inside.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/pbot_fav.webp" width="1872" height="274" alt="Player controls — Favourites focused" loading="lazy"></div>
+<figcaption><b>Favourites focused</b><span>Round button; the label appears under it.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;pbtn pill&quot;&gt;
+  &lt;svg fill=&quot;none&quot; height=&quot;56&quot; viewbox=&quot;8 8 40 40&quot; width=&quot;56&quot;&gt;
+    …
+  &lt;/svg&gt;
+  &lt;span&gt;
+    TV guide
+  &lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;pbtn circ&quot;&gt;
+  &lt;svg fill=&quot;none&quot; height=&quot;72&quot; viewbox=&quot;0 0 72 72&quot; width=&quot;72&quot;&gt;
+    …
+  &lt;/svg&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.pbtn {
+  position:absolute;
+  height:72px;
+  box-sizing:border-box;
+  border-radius:36px;
+  background:#242020;
+  box-shadow:inset 0 0 0 2px #434141;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  color:var(--txt);
+  font:500 28px/32px Inter,sans-serif;
+  white-space:nowrap;
+  transition:background-color .2s linear,box-shadow .2s linear;
+}
+.pbtn.circ {
+  width:72px;
+}
+.pbtn.pill {
+  padding:0 24px;
+}
+.pbtn svg {
+  display:block;
+  flex:none;
+}
+.pbtn.plive {
+  padding:0 24px;
+  gap:16px;
+}
+.pbtn.plive i {
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  flex:none;
+  box-shadow:inset 0 0 0 3px #F7F5F5;
+  background:radial-gradient(circle,#F7F5F5 32%,transparent 36%);
+}
+.pbtn.plive.ind {
+  background:none;
+  box-shadow:none;
+}
+.pbtn.plive.ind i {
+  box-shadow:inset 0 0 0 3px #2FBF71;
+  background:radial-gradient(circle,#2FBF71 32%,transparent 36%);
+}
+.pbtn.on {
+  background:var(--red);
+  box-shadow:inset 0 0 0 2px var(--red);
+}
+.pbtn.mute {
+  opacity:.4;
+}
+.wempty .pbtn {
+  position:relative;
+  left:auto;
+  flex:none;
+  width:auto;
+  height:80px;
+  border-radius:40px;
+  padding:0 48px;
+}
+.pbtn.sout {
+  position:relative;
+  left:0!important;
+  align-self:flex-start;
+  height:72px;
+  width:320px;
+  flex:none;
+  padding:0;
+}</code></pre></div></details>
+</section><section class="comp" id="player-pseek">
+<header><h3>Seek preview</h3><span class="fig">Figma · Seek Preview</span></header>
+<p class="desc">Scrubbing the timeline shows a frame preview, the time and the show at that moment.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/pseek.webp" width="1872" height="628" alt="Seek preview — Scrubbing" loading="lazy"></div>
+<figcaption><b>Scrubbing</b><span>Red track up to the preview point; On air badge for live time.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;ptrack seek&quot; style=&quot;--edge: 48.61904761904762%;&quot;&gt;
+  &lt;i style=&quot;width: 48.5952%;&quot;&gt;
+  &lt;/i&gt;
+  &lt;u style=&quot;left: 48.5952%;&quot;&gt;
+  &lt;/u&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.ptrack {
+  position:absolute;
+  left:48px;
+  width:1824px;
+  height:16px;
+  border-radius:8px;
+  background:#434141;
+}
+.ptrack::before {
+  content:&#x27;&#x27;;
+  position:absolute;
+  left:0;
+  top:0;
+  height:16px;
+  width:var(--edge,0);
+  border-radius:8px;
+  background:rgba(255,255,255,.12);
+}
+.ptrack i {
+  position:absolute;
+  left:0;
+  top:0;
+  height:16px;
+  border-radius:8px;
+  background:var(--txt);
+  transition:background-color .2s linear;
+}
+.ptrack u {
+  position:absolute;
+  top:-12px;
+  width:40px;
+  height:40px;
+  margin-left:-20px;
+  border-radius:50%;
+  background:var(--txt);
+  opacity:0;
+  transform:scale(.5);
+  transition:opacity .2s linear,transform .2s cubic-bezier(.25,.8,.25,1);
+}
+.ptrack.seek i {
+  background:var(--red);
+}
+.ptrack.seek u {
+  opacity:1;
+  transform:none;
+}</code></pre></div></details>
+</section><section class="comp" id="player-pchn">
+<header><h3>Channel strip</h3><span class="fig">Figma · Channel Strip</span></header>
+<p class="desc">Down from the controls opens the other channels. Numbers for empty slots, logos for channels, On air marker on the current one.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/pchn.webp" width="1920" height="268" alt="Channel strip — Focused channel" loading="lazy"></div>
+<figcaption><b>Focused channel</b><span>Ring and name under the focused channel.</span></figcaption></figure></div>
+
+</section><section class="comp" id="player-epg">
+<header><h3>TV guide</h3><span class="fig">Figma · TV Guide</span></header>
+<p class="desc">Opened from the player. Days on the left, the day schedule on the right. Past shows play from the archive, the current show is marked On air, future shows are not available yet.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/epg.webp" width="1920" height="1080" alt="TV guide — Today" loading="lazy"></div>
+<figcaption><b>Today</b><span>Today selected, current show highlighted.</span></figcaption></figure></div>
+
+</section></article><article class="pg" id="title" data-page="title"><h2>Title page</h2><p class="lead">The page for a movie, series or show: description, actions and related rows.</p><section class="comp" id="title-hero">
+<header><h3>Title header</h3><span class="fig">Figma · Content Hero</span></header>
+<p class="desc">Title, seasons count, rating, year, country, genre and a description cut after four lines. The full text opens from Full description.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/hero.webp" width="832" height="384" alt="Title header — Default" loading="lazy"></div>
+<figcaption><b>Default</b><span>Rating in white with a star.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;ctitle&quot;&gt;
+  Series title · 1
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.ctitle {
+  position:absolute;
+  font:600 40px/48px Inter,sans-serif;
+  color:var(--txt);
+  max-width:904px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}</code></pre></div></details>
+</section><section class="comp" id="title-mbtn">
+<header><h3>Action buttons</h3><span class="fig">Figma · Main Button</span></header>
+<p class="desc">Three rows. The top row holds icon buttons that expand with a label when focused, so only one label is wide at a time. The red fill always follows the focus.</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/mbtn_seasons.webp" width="644" height="304" alt="Action buttons — Seasons focused (default)" loading="lazy"></div>
+<figcaption><b>Seasons focused (default)</b><span>Default focus on a series page.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/mbtn_cont.webp" width="644" height="304" alt="Action buttons — Continue watching focused" loading="lazy"></div>
+<figcaption><b>Continue watching focused</b><span>Second line shows the episode to continue.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/mbtn_desc.webp" width="644" height="304" alt="Action buttons — Full description focused" loading="lazy"></div>
+<figcaption><b>Full description focused</b><span>Icon buttons on the right stay round.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/mbtn_fav.webp" width="644" height="304" alt="Action buttons — Add to favourites focused" loading="lazy"></div>
+<figcaption><b>Add to favourites focused</b><span>Full description collapses to an icon; the heart button expands.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/mbtn_favon.webp" width="644" height="304" alt="Action buttons — In favourites" loading="lazy"></div>
+<figcaption><b>In favourites</b><span>After Enter the heart fills and the label switches to Remove from favourites. A toast confirms.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/mbtn_rate.webp" width="644" height="304" alt="Action buttons — Rate focused" loading="lazy"></div>
+<figcaption><b>Rate focused</b><span>Opens the rating dialog.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;mbtn&quot;&gt;
+  &lt;span class=&quot;mi&quot;&gt;
+    &lt;svg fill=&quot;none&quot; height=&quot;40&quot; viewbox=&quot;0 0 40 40&quot; width=&quot;40&quot;&gt;
+      …
+    &lt;/svg&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;ml&quot;&gt;
+    &lt;span class=&quot;mt1&quot;&gt;
+      Full description
+    &lt;/span&gt;
+  &lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;mbtn col&quot;&gt;
+  &lt;span class=&quot;mi&quot;&gt;
+    &lt;svg fill=&quot;none&quot; height=&quot;40&quot; viewbox=&quot;0 0 40 40&quot; width=&quot;40&quot;&gt;
+      …
+    &lt;/svg&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;ml&quot;&gt;
+    &lt;span class=&quot;mt1&quot;&gt;
+      Add to favourites
+    &lt;/span&gt;
+  &lt;/span&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.mbtn {
+  position:absolute;
+  height:80px;
+  border-radius:40px;
+  background:#242020;
+  border:2px solid #434141;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding-left:18px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.mbtn .mi {
+  flex:none;
+  width:40px;
+  height:40px;
+}
+.mbtn .mi svg {
+  display:block;
+}
+.mbtn .ml {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  transition:opacity .2s linear .08s;
+}
+.mbtn .mt1 {
+  font:500 28px/32px Inter,sans-serif;
+  color:var(--txt);
+}
+.mbtn .mt2 {
+  font:400 22px/26px Inter,sans-serif;
+  color:var(--txt2);
+  transition:color .2s linear;
+}
+.mbtn.col .ml {
+  opacity:0;
+  transition:opacity .12s linear;
+}
+.mbtn.on {
+  background:var(--red);
+  border-color:var(--red);
+}
+.mbtn.on .mt2 {
+  color:var(--txt);
+}</code></pre></div></details>
+</section><section class="comp" id="title-csrc">
+<header><h3>Source card</h3><span class="fig">Figma · Source Card</span></header>
+<p class="desc">For archive recordings: the channel and air date of the recording.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/csrc.webp" width="409" height="120" alt="Source card — Default" loading="lazy"></div>
+<figcaption><b>Default</b><span>Not focusable.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;csrc&quot;&gt;
+  &lt;i&gt;
+  &lt;/i&gt;
+  &lt;div&gt;
+    &lt;b&gt;
+      Channel name
+    &lt;/b&gt;
+    &lt;span&gt;
+      25 April 2022, 22:00
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.csrc {
+  position:absolute;
+  width:385px;
+  height:96px;
+  border-radius:16px;
+  background:rgba(13,11,11,.85);
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:0 24px;
+  box-sizing:border-box;
+}
+.csrc i {
+  flex:none;
+  width:56px;
+  height:56px;
+  border-radius:12px;
+  background:#302C2C;
+}
+.csrc b {
+  display:block;
+  font:500 24px/32px Inter,sans-serif;
+}
+.csrc span {
+  font:400 22px/28px Inter,sans-serif;
+  color:var(--txt2);
+  white-space:nowrap;
+}</code></pre></div></details>
+</section><section class="comp" id="title-desc">
+<header><h3>Description dialog</h3><span class="fig">Figma · Description Modal</span></header>
+<p class="desc">The full description in a scrollable panel over the dimmed page. Close returns focus to Full description.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/desc.webp" width="1920" height="1080" alt="Description dialog — Open" loading="lazy"></div>
+<figcaption><b>Open</b><span>Up/Down scroll the text; Back or Close dismiss.</span></figcaption></figure></div>
+
+</section><section class="comp" id="title-rate">
+<header><h3>Rating dialog</h3><span class="fig">Figma · Rate Modal</span></header>
+<p class="desc">Five stars, Left/Right set the score, Rate saves it.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/rate.webp" width="1920" height="1080" alt="Rating dialog — Open" loading="lazy"></div>
+<figcaption><b>Open</b><span>First star focused.</span></figcaption></figure></div>
+
+</section><section class="comp" id="title-qa">
+<header><h3>Quick actions</h3><span class="fig">Figma · Quick Actions</span></header>
+<p class="desc">Long press of Enter on any card opens a short menu next to it. The actions depend on the item: titles get Start watching and Add to favourites, channels get Start watching, TV guide and favourites.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/qa.webp" width="1920" height="1080" alt="Quick actions — On a poster" loading="lazy"></div>
+<figcaption><b>On a poster</b><span>Menu opens to the right of the card.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/qa_ch.webp" width="1920" height="1080" alt="Quick actions — On a channel" loading="lazy"></div>
+<figcaption><b>On a channel</b><span>TV guide shows what is on now.</span></figcaption></figure></div>
+
+</section></article><article class="pg" id="settings" data-page="settings"><h2>Settings</h2><p class="lead">One list on the left, the options of the selected item on the right. Options apply immediately; there is no Save button.</p><section class="comp" id="settings-smenu">
+<header><h3>Settings list</h3><span class="fig">Figma · Settings Menu</span></header>
+<p class="desc">Items grouped under Live TV, Archive, Interface and Account. The focused item fills red.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/set_menu.webp" width="632" height="795" alt="Settings list — Time zone focused" loading="lazy"></div>
+<figcaption><b>Time zone focused</b><span>Group titles are not focusable.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;sitem on&quot;&gt;
+  Time zone
+&lt;/div&gt;
+&lt;div class=&quot;sitem&quot;&gt;
+  Favourite channel order
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.sitem {
+  position:absolute;
+  left:48px;
+  width:600px;
+  height:64px;
+  margin-top:-16px;
+  box-sizing:border-box;
+  padding:0 24px;
+  border-radius:32px;
+  font:500 28px/64px Inter,sans-serif;
+  color:var(--txt);
+  white-space:nowrap;
+  transition:background-color .2s linear;
+}
+.sitem.sel {
+  background:var(--tonal);
+}
+.sitem.on {
+  background:var(--red);
+}</code></pre></div></details>
+</section><section class="comp" id="settings-spanel">
+<header><h3>Settings panels</h3><span class="fig">Figma · Settings Preview</span></header>
+<p class="desc">The panel on the right changes with the focused item. Radio lists, switches, a sortable list and account details.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/set_tz.webp" width="1192" height="888" alt="Settings panels — Time zone" loading="lazy"></div>
+<figcaption><b>Time zone</b><span>Radio list; the current zone has the filled radio.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/set_order.webp" width="1192" height="888" alt="Settings panels — Favourite channel order" loading="lazy"></div>
+<figcaption><b>Favourite channel order</b><span>Reorder mode for the favourites list.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/set_arch.webp" width="1192" height="888" alt="Settings panels — Archive settings" loading="lazy"></div>
+<figcaption><b>Archive settings</b><span>Switches.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/set_fmt.webp" width="1192" height="888" alt="Settings panels — Live TV screen format" loading="lazy"></div>
+<figcaption><b>Live TV screen format</b><span>Grid or list.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/set_nav.webp" width="1192" height="888" alt="Settings panels — Navigation panel" loading="lazy"></div>
+<figcaption><b>Navigation panel</b><span>How the side menu behaves.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/set_acc.webp" width="1192" height="888" alt="Settings panels — My account" loading="lazy"></div>
+<figcaption><b>My account</b><span>Account details and Sign out.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;spanel&quot;&gt;
+  &lt;div class=&quot;sph1&quot;&gt;
+    Time zone
+  &lt;/div&gt;
+  &lt;div class=&quot;sph2&quot;&gt;
+    Choose a time zone so the live TV schedule shows in your local time.
+  &lt;/div&gt;
+  &lt;div class=&quot;sbody&quot;&gt;
+    &lt;div class=&quot;setr s1 on&quot;&gt;
+      &lt;b&gt;
+        Moscow
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC+3
+      &lt;/span&gt;
+      &lt;i class=&quot;srad&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;setr s1&quot;&gt;
+      &lt;b&gt;
+        Kyiv
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC+1 / UTC+2
+      &lt;/span&gt;
+      &lt;i class=&quot;srad&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;setr s1&quot;&gt;
+      &lt;b&gt;
+        Berlin
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC+1 / UTC+2
+      &lt;/span&gt;
+      &lt;i class=&quot;srad&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;setr s1&quot;&gt;
+      &lt;b&gt;
+        New York
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC-5 / UTC-4
+      &lt;/span&gt;
+      &lt;i class=&quot;srad&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;setr s1&quot;&gt;
+      &lt;b&gt;
+        London
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC+0 / UTC+1
+      &lt;/span&gt;
+      &lt;i class=&quot;srad&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;setr s1&quot;&gt;
+      &lt;b&gt;
+        Chicago
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC-6 / UTC-5
+      &lt;/span&gt;
+      &lt;i class=&quot;srad&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;setr s1&quot;&gt;
+      &lt;b&gt;
+        Denver
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC-7 / UTC-6
+      &lt;/span&gt;
+      &lt;i class=&quot;srad&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;setr s1&quot;&gt;
+      &lt;b&gt;
+        Los Angeles
+      &lt;/b&gt;
+      &lt;span class=&quot;sx&quot;&gt;
+        UTC-8 / UTC-7
+      &lt;/span&gt;
+      &lt;i class=&quot;srad on&quot;&gt;
+      &lt;/i&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.sbar {
+  position:absolute;
+  width:16px;
+  border-radius:8px;
+  background:#302C2C;
+  overflow:hidden;
+  transition:opacity .2s linear;
+}
+.sbar u {
+  display:block;
+  width:16px;
+  border-radius:8px;
+  background:var(--txt);
+}
+.pbtn {
+  position:absolute;
+  height:72px;
+  box-sizing:border-box;
+  border-radius:36px;
+  background:#242020;
+  box-shadow:inset 0 0 0 2px #434141;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  color:var(--txt);
+  font:500 28px/32px Inter,sans-serif;
+  white-space:nowrap;
+  transition:background-color .2s linear,box-shadow .2s linear;
+}
+.pbtn.circ {
+  width:72px;
+}
+.pbtn.pill {
+  padding:0 24px;
+}
+.pbtn svg {
+  display:block;
+  flex:none;
+}
+.pbtn.plive {
+  padding:0 24px;
+  gap:16px;
+}
+.pbtn.plive i {
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  flex:none;
+  box-shadow:inset 0 0 0 3px #F7F5F5;
+  background:radial-gradient(circle,#F7F5F5 32%,transparent 36%);
+}
+.pbtn.plive.ind {
+  background:none;
+  box-shadow:none;
+}
+.pbtn.plive.ind i {
+  box-shadow:inset 0 0 0 3px #2FBF71;
+  background:radial-gradient(circle,#2FBF71 32%,transparent 36%);
+}
+.pbtn.on {
+  background:var(--red);
+  box-shadow:inset 0 0 0 2px var(--red);
+}
+.pbtn.mute {
+  opacity:.4;
+}
+.wempty .pbtn {
+  position:relative;
+  left:auto;
+  flex:none;
+  width:auto;
+  height:80px;
+  border-radius:40px;
+  padding:0 48px;
+}
+.spanel {
+  position:absolute;
+  left:680px;
+  top:144px;
+  width:1192px;
+  height:888px;
+  box-sizing:border-box;
+  border-radius:24px;
+  background:#181515;
+  padding:32px 24px 24px;
+  display:flex;
+  flex-direction:column;
+}
+.sph1 {
+  font:600 32px/40px Inter,sans-serif;
+  color:var(--txt);
+}
+.sph2 {
+  font:400 24px/32px Inter,sans-serif;
+  color:var(--txt2);
+  margin:8px 0 24px;
+  max-width:1100px;
+}
+.sbody {
+  position:relative;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.sbody.sscroll {
+  overflow:hidden;
+}
+.setr {
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  padding:0 16px;
+  border-radius:16px;
+  box-sizing:border-box;
+  transition:background-color .2s linear,box-shadow .2s linear;
+}
+.setr.on {
+  background:rgba(215,25,45,.16);
+  box-shadow:inset 0 0 0 3px var(--red);
+}
+.setr b {
+  font:500 28px/36px Inter,sans-serif;
+  color:var(--txt);
+}
+.setr span {
+  display:block;
+  font:400 24px/32px Inter,sans-serif;
+  color:var(--txt2);
+}
+.setr.s1 {
+  height:68px;
+}
+.setr.s1 .srad {
+  margin-left:24px;
+}
+.setr.s1 b+.srad,.setr.s1 b+.stog {
+  margin-left:auto;
+}
+.setr.s1 .sx {
+  margin-left:auto;
+  color:var(--mute);
+}
+.setr.s2 {
+  height:96px;
+  justify-content:space-between;
+}
+.setr.s3 {
+  height:216px;
+  padding:24px 32px;
+}
+.setr.s3&gt;div {
+  flex:1;
+  align-self:flex-start;
+  padding-top:8px;
+}
+.setr.s3&gt;div span {
+  max-width:520px;
+}
+.setr.s3 svg {
+  flex:none;
+}
+.setr.s3.sm {
+  height:196px;
+}
+.setr.s3.sm svg {
+  width:300px;
+  height:150px;
+}
+.srad {
+  flex:none;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  box-shadow:inset 0 0 0 3px var(--txt);
+  margin-left:auto;
+}
+.setr.s3 .srad {
+  margin-left:0;
+  align-self:flex-start;
+  margin-top:12px;
+}
+.srad.on {
+  box-shadow:inset 0 0 0 3px var(--red);
+  background:radial-gradient(circle,var(--red) 36%,transparent 40%);
+}
+.stog {
+  flex:none;
+  width:64px;
+  height:36px;
+  border-radius:18px;
+  background:#434141;
+  position:relative;
+  margin-left:auto;
+  transition:background-color .2s linear;
+}
+.stog::after {
+  content:&#x27;&#x27;;
+  position:absolute;
+  left:4px;
+  top:4px;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:#F7F5F5;
+  transition:transform .2s cubic-bezier(.25,.8,.25,1);
+}
+.stog.on {
+  background:var(--red);
+}
+.stog.on::after {
+  transform:translateX(28px);
+}
+.setr.on .stog.on {
+  background:#F7F5F5;
+}
+.setr.on .stog.on::after {
+  background:var(--red);
+}
+.sdiv {
+  height:2px;
+  background:#434141;
+  margin:16px 0;
+}
+.setr.s4 {
+  position:absolute;
+  left:0;
+  right:28px;
+  height:128px;
+}
+.setr.s4 em {
+  font:600 32px/40px Inter,sans-serif;
+  font-style:normal;
+  width:56px;
+  text-align:right;
+}
+.setr.s4 .sti {
+  width:112px;
+  height:112px;
+  border-radius:8px;
+  overflow:hidden;
+  position:relative;
+  flex:none;
+}
+.setr.s4 .sti img {
+  position:absolute;
+  left:-7px;
+  top:-7px;
+  width:126px;
+  height:126px;
+}
+.setr.s4 b {
+  color:var(--mute);
+}
+.setr.s4.on b,.setr.s4.edit b {
+  color:var(--txt);
+}
+.setr.s4 .hint,.setr.s4 .hint2 {
+  display:none;
+}
+.setr.s4.on:not(.edit) .hint {
+  display:block;
+}
+.setr.s4.edit .hint2 {
+  display:block;
+  color:var(--txt);
+}
+.setr.s4.edit {
+  background:var(--red);
+  box-shadow:none;
+  z-index:1;
+}
+.setr.s4 .sarr {
+  margin-left:auto;
+  display:none;
+  flex-direction:column;
+  gap:8px;
+}
+.setr.s4.edit .sarr {
+  display:flex;
+}
+.sarr i {
+  width:88px;
+  height:44px;
+  border-radius:22px;
+  background:rgba(13,11,11,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sinfo {
+  display:flex;
+  height:56px;
+  align-items:center;
+}
+.sinfo span {
+  width:336px;
+  font:400 28px/36px Inter,sans-serif;
+  color:var(--mute);
+}
+.sinfo b {
+  font:500 28px/36px Inter,sans-serif;
+  color:var(--txt);
+}
+.pbtn.sout {
+  position:relative;
+  left:0!important;
+  align-self:flex-start;
+  height:72px;
+  width:320px;
+  flex:none;
+  padding:0;
+}
+#fullTab.hint {
+  border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(215,25,45,.35);
+}
+html.screen .remote,html.screen .hint {
+  display:none!important;
+}
+.hint {
+  font:400 13px/1.4 Inter,system-ui,sans-serif;
+  color:#918989;
+  text-align:center;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 14px;
+  justify-content:center;
+}
+.hint kbd {
+  font:500 11px Inter,sans-serif;
+  border:1px solid #2c2626;
+  border-bottom-width:2px;
+  border-radius:5px;
+  padding:1px 6px;
+  color:#C9C4C4;
+  margin-right:3px;
+}
+.hint button {
+  font:500 13px Inter,sans-serif;
+  color:#F7F5F5;
+  background:#1a1616;
+  border:1px solid #2c2626;
+  border-radius:999px;
+  padding:5px 12px;
+  cursor:pointer;
+}
+.hint button:hover {
+  border-color:#D7192D;
+}</code></pre></div></details>
+</section></article><article class="pg" id="feedback" data-page="feedback"><h2>Feedback</h2><p class="lead">How the app answers the viewer: toasts, empty screens and loading.</p><section class="comp" id="feedback-toast">
+<header><h3>Toast</h3><span class="fig">Figma · Toast</span></header>
+<p class="desc">Light pill with black text, no icon, shown for 3 seconds. At the bottom on regular screens and at the top in the player, so it does not cover the controls. If the same action repeats while the toast is on screen, the toast nudges instead of appearing again.</p>
+<div class="states"><figure class="st"><div class="shot"><img src="img/toast.webp" width="384" height="80" alt="Toast — Bottom" loading="lazy"></div>
+<figcaption><b>Bottom</b><span>Added to favourites.</span></figcaption></figure><figure class="st"><div class="shot"><img src="img/toast_top.webp" width="326" height="80" alt="Toast — Top · player" loading="lazy"></div>
+<figcaption><b>Top · player</b><span>Server changed.</span></figcaption></figure></div>
+<details class="cd"><summary>Code from the prototype</summary><div class="code"><div class="tabs" role="tablist"><button class="on" data-t="html">HTML</button><button data-t="css">CSS</button><button class="cp" title="Copy">Copy</button></div>
+<pre data-p="html"><code>&lt;div class=&quot;toast tv-a show&quot; id=&quot;toast&quot;&gt;
+  Added to favourites
+&lt;/div&gt;</code></pre><pre data-p="css" hidden><code>.toast {
+  position:absolute;
+  left:50%;
+  bottom:64px;
+  transform:translateX(-50%);
+  background:#242020;
+  border:2px solid #434141;
+  border-radius:999px;
+  padding:16px 32px;
+  font:500 28px Inter,sans-serif;
+  color:var(--txt2);
+  opacity:0;
+  transition:opacity .25s;
+  pointer-events:none;
+  white-space:nowrap;
+  z-index:5;
+}
+.toast.show {
+  opacity:1;
+}
+.toast .tic,.toast .ttx {
+  display:flex;
+}
+.toast small:empty {
+  display:none;
+}
+.toast .ttx {
+  flex-direction:column;
+}
+.toast.tv-a,.toast.tv-a * {
+  color:#0D0B0B!important;
+}
+.toast.tv-a {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  bottom:96px;
+  background:#F7F5F5;
+  border:0;
+  color:#0D0B0B;
+  padding:20px 40px;
+  font:600 32px/40px Inter,sans-serif;
+  box-shadow:0 16px 48px rgba(0,0,0,.6);
+  transform:translate(-50%,24px);
+  transition:opacity .2s,transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.toast.tv-a.show {
+  transform:translate(-50%,0);
+}
+.toast.tv-a.top {
+  top:200px;
+  bottom:auto;
+  transform:translate(-50%,-24px);
+}
+.toast.tv-a.top.show {
+  transform:translate(-50%,0);
+}
+.toast.tv-a.nudge {
+  animation:tnudge 180ms cubic-bezier(.2,.8,.2,1);
+}
+.toast.tv-a.is-on .tic {
+  color:var(--red);
+}
+.toast.tv-b {
+  display:flex;
+  align-items:center;
+  gap:20px;
+  bottom:96px;
+  background:#2A2525;
+  border:2px solid #5a5454;
+  color:var(--txt);
+  border-radius:24px;
+  padding:16px 36px 16px 16px;
+  font:600 32px/40px Inter,sans-serif;
+  box-shadow:0 20px 56px rgba(0,0,0,.7);
+  transform:translate(-50%,24px);
+  transition:opacity .2s,transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.toast.tv-b.show {
+  transform:translate(-50%,0);
+}
+.toast.tv-b .tic {
+  width:64px;
+  height:64px;
+  border-radius:16px;
+  background:#3a3434;
+  align-items:center;
+  justify-content:center;
+  color:var(--txt);
+}
+.toast.tv-b.is-on .tic {
+  background:var(--red);
+  color:#fff;
+}
+.toast.tv-c {
+  display:flex;
+  align-items:center;
+  gap:20px;
+  left:auto;
+  right:48px;
+  top:152px;
+  bottom:auto;
+  transform:translateX(120%);
+  background:#242020;
+  border:2px solid #4a4545;
+  border-left:8px solid var(--txt);
+  color:var(--txt);
+  border-radius:20px;
+  padding:24px 40px 24px 28px;
+  font:600 32px/40px Inter,sans-serif;
+  box-shadow:0 24px 64px rgba(0,0,0,.75);
+  transition:opacity .2s,transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.toast.tv-c.show {
+  transform:none;
+}
+.toast.tv-c.is-on {
+  border-left-color:var(--red);
+}
+.toast.tv-c small {
+  font:400 24px/32px Inter,sans-serif;
+  color:var(--mute);
+}
+.toast.tv-c.is-on .tic {
+  color:var(--red);
+}
+.toast.tv-d {
+  display:flex;
+  align-items:center;
+  gap:24px;
+  left:0;
+  right:0;
+  bottom:0;
+  transform:translateY(100%);
+  border:0;
+  border-radius:0;
+  padding:56px 152px 56px;
+  background:linear-gradient(180deg,rgba(13,11,11,0) 0%,rgba(13,11,11,.92) 40%,#0D0B0B 100%);
+  color:var(--txt);
+  font:600 36px/44px Inter,sans-serif;
+  transition:opacity .2s,transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.toast.tv-d.show {
+  transform:none;
+}
+.toast.tv-d .tic {
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:#F7F5F5;
+  color:#0D0B0B;
+  align-items:center;
+  justify-content:center;
+}
+.toast.tv-d.is-on .tic {
+  background:var(--red);
+  color:#fff;
+}
+.toast.tv-d small {
+  font:400 26px/34px Inter,sans-serif;
+  color:var(--mute);
+}
+html.screen main.show {
+  padding:0;
+  min-height:0;
+  height:100vh;
+  gap:0;
+}
+html.screen main.show .viewport {
+  border-radius:0;
+}
+main.show {
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+  padding:16px;
+  box-sizing:border-box;
+  min-height:100vh;
+}
+main.show .viewport {
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:12px;
+}</code></pre></div></details>
+</section><section class="comp" id="feedback-empty">
+<header><h3>Empty state</h3><span class="fig">Figma · Empty State</span></header>
+<p class="desc">Icon, what is missing, how to fill it, and one button that leads there.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/fav_empty.webp" width="1920" height="1080" alt="Empty state — Favourites" loading="lazy"></div>
+<figcaption><b>Favourites</b><span>Go to Archive.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/watched_empty.webp" width="1920" height="1080" alt="Empty state — Watched" loading="lazy"></div>
+<figcaption><b>Watched</b><span>Go to Archive.</span></figcaption></figure></div>
+
+</section><section class="comp" id="feedback-load">
+<header><h3>Search states</h3><span class="fig">Figma · Search</span></header>
+<p class="desc">Suggestions appear after two letters. While results load, the grid shows skeleton cards of the final size so nothing jumps.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/search_q.webp" width="1920" height="1080" alt="Search states — Suggestions" loading="lazy"></div>
+<figcaption><b>Suggestions</b><span>Matching part in bold.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/search_load.webp" width="1920" height="1080" alt="Search states — Loading" loading="lazy"></div>
+<figcaption><b>Loading</b><span>Skeleton cards.</span></figcaption></figure></div>
+
+</section></article><article class="pg" id="screens" data-page="screens"><h2>Screens</h2><p class="lead">The components above, assembled. Captured from the live prototype.</p><section class="comp" id="screens-scr">
+<header><h3>Main screens</h3><span class="fig">Figma · Screens</span></header>
+<p class="desc">Each screenshot is the prototype in its default state.</p>
+<div class="states"><figure class="st wide"><div class="shot"><img src="img/search.webp" width="1920" height="1080" alt="Main screens — Search" loading="lazy"></div>
+<figcaption><b>Search</b><span>Keyboard, suggestions and popular titles.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/persons.webp" width="1920" height="1080" alt="Main screens — People" loading="lazy"></div>
+<figcaption><b>People</b><span>A–Z index, role filter and person grid.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/fav.webp" width="1920" height="1080" alt="Main screens — Favourites" loading="lazy"></div>
+<figcaption><b>Favourites</b><span>Type filter and poster grid.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/watched.webp" width="1920" height="1080" alt="Main screens — Watched" loading="lazy"></div>
+<figcaption><b>Watched</b><span>Grouped by day.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/channels.webp" width="1920" height="1080" alt="Main screens — TV Archive" loading="lazy"></div>
+<figcaption><b>TV Archive</b><span>Channel list and the channel preview.</span></figcaption></figure><figure class="st wide"><div class="shot"><img src="img/cat.webp" width="1920" height="1080" alt="Main screens — Category" loading="lazy"></div>
+<figcaption><b>Category</b><span>Genre chips, filters, grid and pager.</span></figcaption></figure></div>
+
+</section></article></main>
+</div>
+<script>
+const pages=[...document.querySelectorAll('.pg')],items=[...document.querySelectorAll('nav>ul>li')];
+function show(){const h=location.hash.slice(1)||'foundations';const pid=(document.getElementById(h)?.closest('.pg')||pages[0]).dataset.page;
+ pages.forEach(p=>p.classList.toggle('cur',p.dataset.page===pid));
+ items.forEach(li=>li.classList.toggle('cur',li.firstElementChild.dataset.page===pid));
+ const t=document.getElementById(h);if(t&&!t.classList.contains('pg'))requestAnimationFrame(()=>t.scrollIntoView());else window.scrollTo(0,0);}
+addEventListener('hashchange',show);show();
+document.addEventListener('click',e=>{const b=e.target.closest('.tabs button');if(!b)return;const c=b.closest('.code');
+ if(b.classList.contains('cp')){const p=[...c.querySelectorAll('pre')].find(x=>!x.hidden);try{navigator.clipboard.writeText(p.innerText);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500)}catch(_){}return;}
+ c.querySelectorAll('.tabs button:not(.cp)').forEach(x=>x.classList.toggle('on',x===b));c.querySelectorAll('pre').forEach(p=>p.hidden=p.dataset.p!==b.dataset.t);});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('nav ul ul a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id));}}),{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('.comp').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
