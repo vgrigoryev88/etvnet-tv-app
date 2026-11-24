@@ -198,9 +198,10 @@ main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padd
 .dcta{height:72px;border-radius:36px;background:var(--red);font:500 28px/72px Inter,sans-serif;color:var(--txt);text-align:center;transition:transform .12s cubic-bezier(.25,.8,.25,1)}
 .dcta.press{transform:scale(.97)}
 /* ---- Archive/Overlay/Rate ---- */
-.rpanel{position:absolute;left:656px;top:308px;width:608px;height:464px;box-sizing:border-box;border-radius:24px;background:#181515;border:2px solid #434141;padding:48px;display:flex;flex-direction:column;gap:48px;will-change:opacity,transform}
+.rpanel{position:absolute;left:656px;top:282px;width:608px;height:516px;box-sizing:border-box;border-radius:24px;background:#181515;border:2px solid #434141;padding:48px;display:flex;flex-direction:column;gap:48px;will-change:opacity,transform}
 .rhead{display:flex;flex-direction:column;align-items:center;gap:24px}.rt1{font:600 40px/48px Inter,sans-serif;color:var(--txt)}
 .rstars{display:flex;gap:8px}
+.rval{display:flex;gap:32px;align-items:baseline;font:400 28px/36px Inter,sans-serif;color:var(--txt2)}.rval b{font:600 32px/36px Inter,sans-serif;color:var(--txt);margin-left:8px}.ravg{color:var(--mute)}
 .rst{width:80px;height:80px;border-radius:40px;display:flex;align-items:center;justify-content:center;transition:background-color .2s linear}
 .rst svg{width:62px;height:62px;display:block;transition:transform 200ms cubic-bezier(.25,.8,.25,1)}
 .rst.foc{background:var(--red)}.rst.foc svg{transform:scale(.8)}
@@ -1123,11 +1124,11 @@ function descKey(o,k){const D=o.desc;
 /* ================= Archive/Overlay/Rate + Icon/UI/Star ================= */
 const RATES={};let starUid=0;
 const STAR_P='M12 2.4l2.83 6.1 6.67.65-5.02 4.47 1.47 6.53L12 16.77l-5.95 3.38 1.47-6.53-5.02-4.47 6.67-.65z';
-const fmtR=v=>String(v).replace('.',',');
+const fmtR=v=>String(v);
 function openRate(o){
   stopMarquee();hideRing();
   const ov=el('div','dov'),pn=el('div','rpanel');
-  pn.innerHTML='<div class="rhead"><div class="rt1">Rate</div><div class="rstars"></div></div><div class="rbtns"><div class="rcta">Rate</div><div class="rcta">Close</div></div>';
+  pn.innerHTML='<div class="rhead"><div class="rt1">Rate</div><div class="rstars"></div><div class="rval"><span class="rme">Your rating <b></b></span><span class="ravg">Average 4.9</span></div></div><div class="rbtns"><div class="rcta">Rate</div><div class="rcta">Close</div></div>';
   const row=pn.querySelector('.rstars');
   const stars=[0,1,2,3,4].map(i=>{const id='sc'+(++starUid);const s=el('div','rst');
     s.innerHTML='<svg viewBox="0 0 24 24"><defs><clipPath id="'+id+'"><path d="'+STAR_P+'"/></clipPath></defs><rect class="sf" x="0" y="0" height="24" width="0" fill="#F7F5F5" clip-path="url(#'+id+')"/><path d="'+STAR_P+'" fill="none" stroke="#F7F5F5" stroke-width="1.4" stroke-linejoin="round"/></svg>';row.appendChild(s);return s;});
@@ -1139,7 +1140,7 @@ function openRate(o){
   ov.style.opacity=1;pn.style.opacity=1;pn.style.transform='none';rateDraw(o);spec();
 }
 function rateDraw(o){const R=o.rate;
-  R.stars.forEach((s,i)=>{const f=Math.max(0,Math.min(1,R.v-i));s.querySelector('.sf').setAttribute('width',24*f);s.classList.toggle('foc',R.area==='stars'&&i===R.pos);});
+  R.stars.forEach((s,i)=>{const f=Math.max(0,Math.min(1,R.v-i));s.querySelector('.sf').setAttribute('width',24*f);s.classList.toggle('foc',R.area==='stars'&&i===R.pos);});R.pn.querySelector('.rval b').textContent=fmtR(R.v);
   R.btns.forEach((b,i)=>b.classList.toggle('on',R.area==='btns'&&R.bi===i));}
 function closeRate(o,save){const R=o.rate;o.rate=null;
   if(save){RATES[o.fk]=R.v;toast('Your rating: '+fmtR(R.v));}
