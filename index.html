@@ -1589,9 +1589,7 @@ function SettingsPage(prev){
   o.build=function(){const id=o.cur();o.rows=[];o.sy=0;let b;
     if(id==='tz'){b=head('Time zone','Choose a time zone so the live TV schedule shows in your local time.');
       TZ.forEach((z,i)=>{const r=el('div','setr s1');r.innerHTML='<b>'+z[0]+'</b><span class="sx">'+z[1]+'</span>'+radio(SET.tz===i);b.appendChild(r);o.rows.push({e:r,act:()=>{SET.tz=i;o.build();}});});}
-    else if(id==='arch'){b=head('Archive settings','In Auto mode, quality is chosen automatically based on your connection speed.');
-      QUAL.forEach((q,i)=>{const r=el('div','setr s2');r.innerHTML='<div><b>'+q[0]+'</b><span>'+q[1]+'</span></div>'+radio(SET.quality===i);b.appendChild(r);o.rows.push({e:r,act:()=>{SET.quality=i;o.build();}});});
-      b.appendChild(el('div','sdiv'));
+    else if(id==='arch'){b=head('Archive settings','Choose how the archive starts and plays.');
       [['boot','Turn on at launch','Archive will open when the app starts'],['autoEp','Auto-play next episode','When an episode ends, the next one starts automatically']].forEach(([k,t,s])=>{const r=el('div','setr s2');r.innerHTML='<div><b>'+t+'</b><span>'+s+'</span></div>'+tog(SET[k]);b.appendChild(r);o.rows.push({e:r,act:()=>{SET[k]=!SET[k];r.querySelector('.stog').classList.toggle('on',SET[k]);}});});}
     else if(id==='format'){b=head('Live TV screen format','Choose how live channels are displayed');
       [['Grid','Channel grid with a schedule preview for the selected channel',PREV_GRID],['List','Channel list with extended information',PREV_LIST]].forEach((f,i)=>{const r=el('div','setr s3');r.innerHTML=radio(SET.format===i)+'<div><b>'+f[0]+'</b><span>'+f[1]+'</span></div>'+f[2];b.appendChild(r);o.rows.push({e:r,act:()=>{SET.format=i;o.build();}});});}
