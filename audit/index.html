@@ -45,6 +45,23 @@ summary:focus-visible{outline:3px solid var(--red);outline-offset:4px;border-rad
 .pair .zoom{margin-top:0}
 .zoom.board{border:0;background:none;border-radius:0}
 .shot.none{border:1px dashed var(--line2);border-radius:16px;padding:40px;text-align:center;color:var(--mute);font-size:15px}
+.insight{background:#1d1416;border:1px solid #4a1d24;border-radius:20px;padding:28px;margin-top:28px}
+.insight .big{font:600 24px/1.35 Inter;color:var(--txt);max-width:none}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.col{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:24px}
+.col h3{margin:4px 0 2px}.col .sub{font-size:14px;color:var(--mute);margin:0 0 12px}
+.tag{font:600 12px/1 Inter;letter-spacing:.06em;text-transform:uppercase;margin:0}
+.avoid .tag{color:#F0505F}.redesign .tag{color:#E8A23A}.keep .tag{color:var(--green)}
+.col ol{list-style:none;margin:0;padding:0;counter-reset:i}
+.col li{counter-increment:i;margin:0;padding:14px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
+.col li b{display:block;font-weight:600;color:var(--txt);margin-bottom:4px}
+.col li b::before{content:counter(i,decimal-leading-zero) "  ";color:var(--mute);font-weight:500}
+.col li span{display:block;font-size:12.5px;margin-top:6px}
+.avoid li span{color:#F0505F}.redesign li span{color:#E8A23A}.keep li span{color:var(--green)}
+.prio{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:24px;margin-top:16px}
+.prio .tag{color:#7AA7FF;margin-bottom:10px}.prio p{max-width:none;color:var(--txt)}.prio b{color:var(--txt);margin-right:8px}
+.method{font-size:14px;color:var(--mute);margin-top:16px;max-width:none}
+@media (max-width:900px){.cols{grid-template-columns:1fr}}
 .df{margin-top:80px;border-top:1px solid var(--line);padding-top:24px;color:var(--mute);font-size:15px}
 .df a{color:var(--txt)}
 @media (max-width:900px){.gens{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.pair{grid-template-columns:1fr}}
@@ -159,9 +176,40 @@ summary:focus-visible{outline:3px solid var(--red);outline-offset:4px;border-rad
 </section>
 <section id="carry">
 <p class="kick">Synthesis</p><h2>What to carry into the new app</h2>
-<p>The audit ended as product requirements rather than a list of complaints: patterns to avoid, things to redesign and habits to keep, each traced back to the boards above.</p>
-<p class="note">This summary was written in Russian. In short: viewers should get from “I know what I want to watch” to playback faster, without losing the ways of navigating they already know. Keep categories, dense information, familiar global navigation, informative cards and the EPG. Redesign Start / Continue for every level, Live TV and favourites, screen space, legibility, orientation and search. Avoid actions bound to special remote keys, hidden player commands and nesting as the only path.</p>
-<a class="zoom full" href="img/summary.webp" target="_blank" rel="noopener"><img src="img/summary.webp" alt="Cross-version synthesis: avoid, redesign, keep" width="3200" height="2760" loading="lazy"></a>
+<p>The audit ended as product requirements rather than a list of complaints: keep useful habits, remove the barriers that kept coming back, and don’t carry over decisions that get in the way of watching. Each point is traced back to the boards above.</p>
+<div class="insight"><p class="kick">Core insight</p><p class="big">Viewers should get from “I know what I want to watch” to playback faster, without losing the ways of navigating they already know.</p><p>Carousels and a deep structure aren’t the problem on their own. The problem starts when they become the only, long route and offer no quick alternative.</p></div>
+<div class="cols">
+<div class="col avoid"><p class="tag">Avoid</p><h3>Don’t carry over</h3><p class="sub">Repeating UX anti-patterns</p><ol>
+<li><b>Actions bound to special keys</b>The C key and other non-standard combinations can be shortcuts, but never the only way. Every important action works with the D-pad and OK.<span>Mid 2.2–2.7 · New 3.1</span></li>
+<li><b>Hidden player commands</b>Don’t make viewers remember which arrows open TimeShift, the channel list or the EPG. Show the available actions in the player overlay.<span>Mid 1.2–1.3 · New 1.1–1.2</span></li>
+<li><b>Waiting for the interface to close</b>An open player panel must not block seeking or other frequent commands.<span>New 1.1</span></li>
+<li><b>Nesting as the required path</b>Don’t make viewers open every season, cycle and episode just to press Watch. Keep the data structure, but shorten the scenario.<span>Oldest 7 · Mid 2 · New 3.1</span></li>
+<li><b>Small text, random accents and focus</b>No competing bright states, labels floating far from their controls, or focused cards covering their neighbours.<span>Oldest 4, 8–8.1 · Mid 3 · New 3</span></li>
+<li><b>Endless horizontal rows with no alternative</b>Carousels suit discovery, but must not be the only way to reach a known channel or episode.<span>Mid 1, 4.1 · New 1–2</span></li>
+</ol></div>
+<div class="col redesign"><p class="tag">Redesign</p><h3>Rework</h3><p class="sub">What must change in the new version</p><ol>
+<li><b>Start / Continue Watching at every level</b>Viewers start from the show, season or cycle; the system picks the right first or next episode. Nesting stays for precise choice.<span>Oldest 7.2–7.5 · Mid 2.2–2.6 · New 3.1</span></li>
+<li><b>Live TV and favourites navigation</b>Less movement on two axes: easy category switching, list or grid views, and direct access to saved channels.<span>Oldest 2 · Mid 1–1.3 · New 1</span></li>
+<li><b>Screen space for content</b>Fewer always-open descriptions. Viewers should see more cards and channels without hurting the typography.<span>Oldest 1, 6 · Mid 1, 3 · New 1–2.1</span></li>
+<li><b>Legibility and full titles</b>Cards show full or clearly distinct titles before focus; focus never covers neighbouring results.<span>Oldest 4 · Mid 3.1 · New 2.1, 3</span></li>
+<li><b>Orientation and a clear way back</b>The current section, the path through containers and the way back are obvious; reaching the menu doesn’t depend on hidden keys.<span>Oldest 5.1, 7 · Mid 1 · New 1</span></li>
+<li><b>Predictable search</b>Keep the compact keyboard, history and suggestions, but separate query, history and results visually and never cover neighbouring cards.<span>Oldest 7 · Mid 5 · New 3</span></li>
+<li><b>History by day, clear focus</b>Group watched titles by date. One clear accent for the active element, with labels next to their actions.<span>Oldest 6, 8.1 · Mid 3 · New 2.1</span></li>
+</ol></div>
+<div class="col keep"><p class="tag">Keep</p><h3>Keep</h3><p class="sub">Proven, useful patterns</p><ol>
+<li><b>Categories and collections</b>Genres, archive by channel and themed collections help start watching without an exact query. Keep them inside a clear IA.<span>Oldest 2, 3, 5 · Mid 3.3–4.1 · New 2</span></li>
+<li><b>Information density without small text</b>Keep the Oldest app’s quick overview of many channels, but make names and icons readable from a distance.<span>Oldest 2, 4 · Mid 1.1 · New 1</span></li>
+<li><b>Familiar global navigation</b>Clearly separate Live TV and Archive; keep a recognisable menu with an option to keep it expanded.<span>Oldest 1–2 · New 1</span></li>
+<li><b>Informative cards and statuses</b>Posters, rating, duration, season/episode, watched marks and progress help decide and must stay distinct.<span>Oldest 8 · Mid 3 · New 2.1</span></li>
+<li><b>EPG and live controls</b>Keep TimeShift with previews, the interactive TV guide, channel favourites, server refresh and Return to Live.<span>Mid 1.2–1.3 · New 1.1–1.2</span></li>
+<li><b>Repeat search and getting back to content</b>Search history, suggestions, Continue Watching and favourites save repeated actions.<span>Mid 5 · New 2.1, 3</span></li>
+</ol></div>
+</div>
+<div class="prio"><p class="tag">Priorities for the new app</p>
+<p><b>P0</b> Start watching without extra screens; full D-pad access; clear focus and a way back; a complete player overlay.</p>
+<p><b>P1</b> A good overview of channels and cards; readable titles; history grouped by day; search without overlaps.</p>
+<p><b>P2</b> Personalised views, extra discovery scenarios and optional animation, within what the devices can handle.</p></div>
+<p class="method">Method: a visual audit of the three available etvnet generations plus qualitative observations from Customer Support. Priorities are design recommendations, not measured KPIs; tasks and D-pad press counts were to be checked in a pilot before release.</p>
 </section>
 <footer class="df">Back to the <a href="https://vgrigoryev.com/etvnet-tv-app">etvnet TV app case study</a>.</footer>
 </article></body></html>
